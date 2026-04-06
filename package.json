@@ -13,6 +13,13 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "docker:build:base": "docker build -f docker/base/api/Dockerfile . -t hotelhub-base-api:local && docker build -f docker/base/web/Dockerfile . -t hotelhub-base-web:local && docker build -f docker/base/mobile/Dockerfile . -t hotelhub-base-mobile:local",
+    "docker:build:services": "docker build -f docker/api/Dockerfile --build-arg BASE_API_IMAGE=hotelhub-base-api:local . -t hotelhub-api:local && docker build -f docker/web/Dockerfile --build-arg BASE_WEB_IMAGE=hotelhub-base-web:local . -t hotelhub-web:local",
+    "docker:build:mobile-builder": "docker build -f docker/mobile/Dockerfile --build-arg BASE_MOBILE_IMAGE=hotelhub-base-mobile:local . -t hotelhub-mobile-builder:local",
+    "docker:build:all": "npm run docker:build:base && npm run docker:build:services && npm run docker:build:mobile-builder",
+    "docker:up": "npm run docker:build:base && npm run docker:build:services && docker compose up -d db api web",
+    "docker:down": "docker compose down -v",
+    "docker:ps": "docker compose ps",
     "dev:web": "npm run dev --workspace web",
     "dev:mobile": "npm run start --workspace mobile",
     "test:api": "cd apps/api && ./gradlew test"

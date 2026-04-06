@@ -14,8 +14,21 @@ apps/
   web/      # Next.js (App Router)
   mobile/   # Expo React Native
 .github/workflows/
-  ci.yml    # CI for API + Web + Mobile
-  cd.yml    # CD publishing API image to GHCR
+  ci-api.yml
+  ci-web.yml
+  ci-mobile.yml
+  publish-base-images.yml
+  publish-api.yml
+  publish-web.yml
+  publish-mobile-artifacts.yml
+docker/
+  base/
+    api/
+    web/
+    mobile/
+  api/
+  web/
+  mobile/
 ```
 
 ## Prerequisites
@@ -65,26 +78,68 @@ npm run build
 npm run lint
 npm run typecheck
 npm run test
+npm run docker:up
+npm run docker:down
+npm run docker:ps
+npm run docker:build:base
+npm run docker:build:services
+npm run docker:build:mobile-builder
+npm run docker:build:all
 ```
 
-## Docker (API + PostgreSQL)
+## Docker (DB + API + Web)
 
 ```bash
-docker compose up --build
+npm run docker:up
 ```
 
 Services:
 
+- Web: `http://localhost:3000`
 - API: `http://localhost:8080/api/v1`
 - PostgreSQL: `localhost:5432`
 
+Mobile no Docker compose e tratado como **builder environment** (`mobile-builder`), nao como runtime service.
+Para build local do builder:
+
+```bash
+npm run docker:build:mobile-builder
+```
+
+Stop stack:
+
+```bash
+npm run docker:down
+```
+
 ## CI/CD
 
-- `CI` workflow validates:
-  - API tests (`apps/api`)
-  - Web lint/typecheck/build (`apps/web`)
-  - Mobile typecheck (`apps/mobile`)
-- `CD` workflow publishes API Docker image to GHCR on `main`.
+- CI separado por dominio:
+  - `ci-api.yml`
+  - `ci-web.yml`
+  - `ci-mobile.yml`
+- CD separado por responsabilidade:
+  - `publish-base-images.yml`
+  - `publish-api.yml`
+  - `publish-web.yml`
+  - `publish-mobile-artifacts.yml`
+
+Imagens publicadas no GHCR:
+
+- Bases:
+  - `hotelhub-base-api` (`java21-v1`)
+  - `hotelhub-base-web` (`node22-v1`)
+  - `hotelhub-base-mobile` (`node22-java17-v1`)
+- Apps:
+  - `hotelhub-api`
+  - `hotelhub-web`
+  - `hotelhub-mobile-builder`
+
+Tags usadas:
+
+- branch (`main`/`develop`)
+- `sha-<commit>`
+- semver (em tags `v*`)
 
 ## Design & Prototyping
 

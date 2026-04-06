@@ -1,4 +1,28 @@
 services:
+  base-api:
+    image: hotelhub-base-api:local
+    build:
+      context: .
+      dockerfile: docker/base/api/Dockerfile
+    profiles:
+      - base-images
+
+  base-web:
+    image: hotelhub-base-web:local
+    build:
+      context: .
+      dockerfile: docker/base/web/Dockerfile
+    profiles:
+      - base-images
+
+  base-mobile:
+    image: hotelhub-base-mobile:local
+    build:
+      context: .
+      dockerfile: docker/base/mobile/Dockerfile
+    profiles:
+      - base-images
+
   db:
     image: postgres:16-alpine
     container_name: hotelhub-db
@@ -16,10 +40,13 @@ services:
     volumes:
       - hotelhub_postgres_data:/var/lib/postgresql/data
 
-  app:
+  api:
+    image: hotelhub-api:local
     build:
-      context: ./apps/api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: docker/api/Dockerfile
+      args:
+        BASE_API_IMAGE: ${BASE_API_IMAGE:-hotelhub-base-api:local}
     container_name: hotelhub-api
     depends_on:
       db:
@@ -34,6 +61,35 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+
+  web:
+    image: hotelhub-web:local
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+      args:
+        BASE_WEB_IMAGE: ${BASE_WEB_IMAGE:-hotelhub-base-web:local}
+    container_name: hotelhub-web
+    depends_on:
+      api:
+        condition: service_started
+    environment:
+      PORT: 3000
+      NEXT_PUBLIC_API_BASE_URL: http://api:8080/api/v1
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  mobile-builder:
+    image: hotelhub-mobile-builder:local
+    build:
+      context: .
+      dockerfile: docker/mobile/Dockerfile
+      args:
+        BASE_MOBILE_IMAGE: ${BASE_MOBILE_IMAGE:-hotelhub-base-mobile:local}
+    container_name: hotelhub-mobile-builder
+    profiles:
+      - mobile-builder
 
 volumes:
   hotelhub_postgres_data:

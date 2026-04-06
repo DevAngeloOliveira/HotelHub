@@ -1,0 +1,12 @@
+.git
+.github
+node_modules
+**/node_modules
+**/.next
+**/.expo
+**/.turbo
+**/dist
+**/build
+**/coverage
+apps/api/.gradle
+apps/api/build

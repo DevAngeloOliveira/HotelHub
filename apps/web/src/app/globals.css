@@ -1,26 +1,58 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --hh-blue: #0b5fff;
+  --hh-blue-700: #083ea8;
+  --hh-green: #16a34a;
+  --hh-green-700: #0f7a38;
+  --hh-danger: #dc2626;
+  --hh-neutral-900: #0f172a;
+  --hh-neutral-700: #334155;
+  --hh-neutral-300: #cbd5e1;
+  --hh-neutral-200: #e2e8f0;
+  --hh-neutral-100: #f1f5f9;
+  --hh-white: #ffffff;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--hh-neutral-900);
+  background:
+    radial-gradient(circle at 0% 0%, #dbe9ff 0%, transparent 40%),
+    radial-gradient(circle at 100% 0%, #d8f5e3 0%, transparent 35%),
+    var(--hh-neutral-100);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hh-card {
+  background: var(--hh-white);
+  border: 1px solid var(--hh-neutral-200);
+  border-radius: 1rem;
+  box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+}
+
+.hh-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
 }
