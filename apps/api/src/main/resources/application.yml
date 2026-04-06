@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: hotelhub-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/hotelhub}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  servlet:
+    context-path: /api/v1
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-this-secret-key-with-at-least-32-characters}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:60}
+  admin-seed:
+    enabled: ${ADMIN_SEED_ENABLED:false}
+    email: ${ADMIN_SEED_EMAIL:}
+    password: ${ADMIN_SEED_PASSWORD:}
+    name: ${ADMIN_SEED_NAME:System Admin}
+    phone: ${ADMIN_SEED_PHONE:}

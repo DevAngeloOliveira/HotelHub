@@ -1,0 +1,41 @@
+package com.hotelhub.api.auth.presentation
+
+import com.hotelhub.api.auth.application.AuthService
+import com.hotelhub.api.auth.presentation.dto.AuthResponse
+import com.hotelhub.api.auth.presentation.dto.LoginRequest
+import com.hotelhub.api.auth.presentation.dto.RegisterRequest
+import com.hotelhub.api.shared.security.SecurityUtils
+import com.hotelhub.api.users.application.UserService
+import com.hotelhub.api.users.presentation.dto.UserProfileResponse
+import com.hotelhub.api.users.presentation.dto.toProfileResponse
+import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+@RequestMapping("/auth")
+class AuthController(
+    private val authService: AuthService,
+    private val userService: UserService
+) {
+
+    @PostMapping("/register")
+    fun register(@Valid @RequestBody request: RegisterRequest): ResponseEntity<AuthResponse> {
+        return ResponseEntity.ok(authService.register(request))
+    }
+
+    @PostMapping("/login")
+    fun login(@Valid @RequestBody request: LoginRequest): ResponseEntity<AuthResponse> {
+        return ResponseEntity.ok(authService.login(request))
+    }
+
+    @GetMapping("/me")
+    fun me(): ResponseEntity<UserProfileResponse> {
+        val userId = SecurityUtils.requireCurrentUserId()
+        return ResponseEntity.ok(userService.getById(userId).toProfileResponse())
+    }
+}
