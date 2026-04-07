@@ -34,7 +34,7 @@ O projeto implementa um **sistema de reserva de hospedagem** com três camadas d
 
 ### 1.2 Arquitetura de Alto Nível
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │           HotelHub - Monorepo (Turborepo)               │
 ├─────────────────────────────────────────────────────────┤
@@ -57,17 +57,62 @@ O projeto implementa um **sistema de reserva de hospedagem** com três camadas d
 └─────────────────────────────────────────────────────────┘
 ```
 
+### 1.3 🚀 Quick Start (Local Development)
+
+#### Prerequisites
+
+- Node.js 22+
+- Docker & Docker Compose
+- Git
+
+#### Setup em 5 minutos
+
+```bash
+# 1. Clone repository
+git clone https://github.com/DevAngeloOliveira/HotelHub.git
+cd HotelHub
+
+# 2. Copie arquivo de variáveis de ambiente
+cp .env.example .env.local
+
+# 3. Inicie todos os services (PostgreSQL, Redis, API, Web)
+docker-compose --env-file .env.local up -d
+
+# 4. Instale dependências do frontend
+npm install
+
+# 5. Inicie development servers
+npm run dev
+
+# Services rodando:
+# Backend:  http://localhost:8080/api/v1 (ou via nginx: http://localhost/api/v1)
+# Web:      http://localhost:3000
+# Swagger:  http://localhost:8080/swagger-ui.html
+# Database: postgres://postgres@localhost:5432/hotelhub (senha: postgres)
+```
+
+#### API Documentation
+
+- **Swagger UI:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- **OpenAPI JSON:** [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+
+#### Environment Configuration
+
+Veja [.env.example](.env.example) para todas as variáveis de configuração.
+
+**Importante:** Gere um novo `JWT_SECRET` para produção:
+
+```bash
+openssl rand -base64 32
+```
+
 ---
 
 ## 2. Monorepo Structure
 
 O projeto utiliza **Turborepo** para gerenciar workspaces interdependentes:
 
-## 2. Monorepo Structure
-
-O projeto utiliza **Turborepo** para gerenciar workspaces interdependentes:
-
-```
+```text
 HotelHub/
 ├── apps/
 │   ├── api/                    # Backend REST API (Spring Boot 3.5)
@@ -142,6 +187,7 @@ HotelHub/
 **Stack:** Java 21, Spring Boot 3.5, Kotlin, PostgreSQL, Redis
 
 **Componentes principais:**
+
 - **Controllers** - REST endpoints (`/api/v1/*`)
 - **Services** - Lógica de negócio
 - **Repositories** - Acesso a dados (Spring Data JPA)
@@ -150,6 +196,7 @@ HotelHub/
 - **Cache** - Redis para sessões e tokens
 
 **Endpoints principais:**
+
 - `POST /auth/login` - Autenticação
 - `POST /auth/register` - Registro
 - `POST /auth/refresh` - Renovação de token
@@ -165,7 +212,7 @@ HotelHub/
 
 **Arquitetura:**
 
-```
+```text
 App Router (SSR + Client Components)
 ├── Pages (src/app/)
 │   ├── / (home)
@@ -185,6 +232,7 @@ App Router (SSR + Client Components)
 ```
 
 **Recursos:**
+
 - Server-Side Rendering (SSR) para SEO
 - Client Components para interatividade
 - TanStack Query para gerenciamento de cache
@@ -198,7 +246,7 @@ App Router (SSR + Client Components)
 
 **Arquitetura:**
 
-```
+```text
 Expo Router (Navigation)
 ├── App (Tabs)
 │   ├── Home
@@ -214,6 +262,7 @@ Expo Router (Navigation)
 ```
 
 **Recursos:**
+
 - Expo Go para development
 - React Navigation (Expo Router)
 - TanStack Query para state management
@@ -255,6 +304,7 @@ hooks/
 ```
 
 **Funcionalidades:**
+
 - Type-safe API client
 - Automatic token management
 - JWT refresh with deduplication
@@ -268,6 +318,7 @@ hooks/
 ## 4. Dependências e Tecnologias
 
 ### 4.1 Backend
+
 - **Java 21** - Runtime
 - **Spring Boot 3.5** - Framework
 - **Kotlin 1.9** - Language
@@ -278,6 +329,7 @@ hooks/
 - **JWT** - Token-based authentication
 
 ### 4.2 Frontend Web
+
 - **Node.js 22** - Runtime
 - **Next.js 15** - Framework
 - **React 19** - UI library
@@ -288,6 +340,7 @@ hooks/
 - **@hotelhub/design-tokens** - Design system
 
 ### 4.3 Frontend Mobile
+
 - **Node.js 22** - Runtime
 - **Expo 51** - Development platform
 - **React Native 0.76** - Framework
@@ -298,6 +351,7 @@ hooks/
 - **@hotelhub/sdk** - Shared SDK
 
 ### 4.4 DevOps & Infrastructure
+
 - **Docker** - Containerization
 - **Docker Compose** - Local orchestration
 - **GitHub Actions** - CI/CD
@@ -311,24 +365,24 @@ hooks/
 
 ### 5.1 Requisitos do Sistema
 
-## 5. Pré-Requisitos e Instalação
-
-### 5.1 Requisitos do Sistema
-
 **Obrigatório:**
+
 - Node.js 22.0 ou superior
 - npm 11.0 ou superior
 - Git 2.34 ou superior
 
 **Para desenvolvimento local (Backend):**
+
 - Java Development Kit (JDK) 21 LTS
 - Gradle 8.0 (fornecido via wrapper)
 
 **Para containerização:**
+
 - Docker 24.0 ou superior
 - Docker Compose 2.20 ou superior
 
 **Opcional:**
+
 - Visual Studio Code (Com extensões TypeScript, Kotlin)
 - Expo CLI (`npm install -g expo-cli`)
 - PostgreSQL 15 (se não usar Docker)
@@ -336,18 +390,21 @@ hooks/
 
 ### 5.2 Instalação de Dependências
 
-#### Clone do repositório:
+#### Clone do repositório
+
 ```bash
 git clone https://github.com/DevAngeloOliveira/HotelHub.git
 cd HotelHub
 ```
 
-#### Instalação de dependências (web/mobile):
+#### Instalação de dependências (web/mobile)
+
 ```bash
 npm install
 ```
 
 Isto instala todas as dependências para:
+
 - Web app (Next.js)
 - Mobile app (Expo)
 - Shared SDK (@hotelhub/sdk)
@@ -360,17 +417,20 @@ Isto instala todas as dependências para:
 ### 6.1 Backend (Spring Boot API)
 
 **Pré-requisitos:**
+
 - Java 21 instalado
 - PostgreSQL em execução (porta 5432)
 - Redis em execução (porta 6379)
 
 **Iniciar API:**
+
 ```bash
 cd apps/api
 ./gradlew bootRun
 ```
 
 **URLs:**
+
 - API base path: `http://localhost:8080/api/v1`
 - Swagger UI: `http://localhost:8080/api/v1/swagger-ui.html`
 - Health check: `http://localhost:8080/actuator/health`
@@ -378,22 +438,26 @@ cd apps/api
 ### 6.2 Web App (Next.js)
 
 **Iniciar servidor de desenvolvimento:**
+
 ```bash
 npm run dev --workspace web
 ```
 
 **URLs:**
+
 - Aplicação web: `http://localhost:3000`
 - Hot reload automático em mudanças
 
 ### 6.3 Mobile App (Expo)
 
 **Iniciar Expo:**
+
 ```bash
 npm run start --workspace mobile
 ```
 
 **Opções:**
+
 - Pressione `w` para abrir no browser
 - Pressione `i` para abrir no iOS simulator
 - Pressione `a` para abrir no Android emulator
@@ -408,6 +472,7 @@ npm run docker:up
 ```
 
 **URLs:**
+
 - Nginx (entrypoint): `http://localhost`
 - Web app (via Nginx): `http://localhost`
 - API (via Nginx): `http://localhost/api/v1`
@@ -416,6 +481,7 @@ npm run docker:up
 - Redis: `localhost:6379`
 
 **Parar stack:**
+
 ```bash
 npm run docker:down
 ```
@@ -500,12 +566,14 @@ O projeto implementa pipelines separados por domínio:
 ### 8.1 Continuous Integration
 
 **`ci-api.yml`**
+
 - Testa API (JUnit)
 - Lint Kotlin (detekt)
 - Build Gradle
 - Security scan (OWASP Dependency-Check)
 
 **`ci-web.yml`**
+
 - Instala dependências
 - TypeScript check
 - ESLint
@@ -513,6 +581,7 @@ O projeto implementa pipelines separados por domínio:
 - Testes (Jest)
 
 **`ci-mobile.yml`**
+
 - Instala dependências
 - TypeScript check
 - ESLint
@@ -522,19 +591,24 @@ O projeto implementa pipelines separados por domínio:
 ### 8.2 Continuous Deployment
 
 **`publish-base-images.yml`**
+
 - Publica imagens base (API, Web, Mobile) no GHCR
 - Tags: `java21-v1`, `node22-v1`, `node22-java17-v1`
 
 **`publish-api.yml`**
+
 - Constrói e publica `hotelhub-api`
 
 **`publish-web.yml`**
+
 - Constrói e publica `hotelhub-web`
 
 **`publish-mobile-artifacts.yml`**
+
 - Constrói artifacts (APK/AAB via Expo EAS)
 
 **Estratégia de tagging:**
+
 - `latest` - Build mais recente no branch default
 - `sha-<commit>` - Identificação por commit
 - `v*` - Tags semânticas (GitHub releases)
@@ -630,6 +704,7 @@ cd apps/api
 ```
 
 Cobertura:
+
 - Service layer tests
 - Repository tests with H2 in-memory database
 - Controller integration tests
@@ -643,6 +718,7 @@ npm run test --workspace web
 ```
 
 Cobertura:
+
 - Component tests
 - Hook tests
 - Integration tests
@@ -683,16 +759,19 @@ Para mais detalhes técnicos, consulte:
 ### 13.2 Padrões de Código
 
 **TypeScript:**
+
 - ESLint configuration for web and mobile
 - Type safety: no `any` types unless absolutely necessary
 - Naming: camelCase para variáveis/funções, PascalCase para tipos/componentes
 
 **Kotlin/Java:**
+
 - Detekt for linting
 - Packages organized by feature
 - Service-oriented architecture
 
 **Git:**
+
 - Branch naming: `feature/`, `bugfix/`, `refactor/`
 - Commit messages: descriptive and in English
 - PR required before merge to main
@@ -749,6 +828,7 @@ EXPO_PUBLIC_API_URL=http://localhost:8080/api/v1
 ## 15. Troubleshooting
 
 ### Erro: "Port already in use"
+
 ```bash
 # Matando processo na porta
 lsof -i :3000  # ou :8080, :5432
@@ -756,6 +836,7 @@ kill -9 <PID>
 ```
 
 ### Erro: TypeScript compilation failed
+
 ```bash
 # Limpar cache e reinstalar
 rm -rf node_modules
@@ -764,6 +845,7 @@ npm run typecheck
 ```
 
 ### Erro: PostgreSQL connection refused
+
 ```bash
 # Verificar se Docker está rodando
 docker ps
@@ -774,6 +856,7 @@ npm run docker:up
 ```
 
 ### Erro: Module not found in SDK
+
 ```bash
 # Reconstruir SDK
 npm run build --workspace @hotelhub/sdk
@@ -785,6 +868,7 @@ npm install
 ## 16. Performance & Otimizações
 
 ### Frontend Web
+
 - **Code Splitting** - Next.js automatic code splitting
 - **Image Optimization** - Next.js Image component
 - **Caching** - TanStack Query cache strategy
@@ -792,12 +876,14 @@ npm install
 - **CSS in JS** - Tailwind purging unused styles
 
 ### Frontend Mobile
+
 - **Bundle Size** - Metro bundler optimization
 - **Lazy Loading** - Expo lazy loading
 - **Memory Management** - React Native profiling
 - **Network** - Request batching and debouncing
 
 ### Backend
+
 - **Database Indexing** - Strategic indexes on frequently queried columns
 - **Query Optimization** - Custom queries with projections
 - **Caching** - Redis for tokens and sessions
@@ -831,6 +917,7 @@ npm install
 ## 18. Referências & Recursos
 
 ### Documentação Oficial
+
 - [Spring Boot 3.5 Docs](https://spring.io/projects/spring-boot)
 - [Next.js 15 Docs](https://nextjs.org/docs)
 - [React Native Docs](https://reactnative.dev/)
@@ -839,6 +926,7 @@ npm install
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 
 ### Padrões & Arquitetura
+
 - [RESTful API Design](https://restfulapi.net/)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)

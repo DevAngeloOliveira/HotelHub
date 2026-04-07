@@ -7,6 +7,7 @@ import com.hotelhub.api.hotels.infrastructure.persistence.repository.HotelJpaRep
 import com.hotelhub.api.shared.config.CacheNames
 import com.hotelhub.api.shared.domain.EntityStatus
 import com.hotelhub.api.shared.error.ResourceNotFoundException
+import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -19,6 +20,9 @@ class HotelPublicService(
     private val hotelRepository: HotelJpaRepository,
     private val destinationRepository: DestinationJpaRepository
 ) {
+    companion object {
+        private val logger = LoggerFactory.getLogger(HotelPublicService::class.java)
+    }
 
     @Cacheable(
         cacheNames = [CacheNames.HOTELS_PUBLIC_LIST],
@@ -26,6 +30,7 @@ class HotelPublicService(
     )
     @Transactional(readOnly = true)
     fun list(destinationId: UUID?, pageable: Pageable): Page<Hotel> {
+        logger.debug("Listing public hotels", mapOf("destinationId" to destinationId, "page" to pageable.pageNumber))
         val page = if (destinationId == null) {
             hotelRepository.findPublic(
                 hotelStatus = EntityStatus.ACTIVE,
@@ -40,7 +45,9 @@ class HotelPublicService(
                 pageable = pageable
             )
         }
-        return page.map { it.toDomain() }
+        val result = page.map { it.toDomain() }
+        logger.debug("Found hotels", mapOf("count" to result.totalElements, "page" to pageable.pageNumber))
+        return result
     }
 
     @Cacheable(
@@ -70,14 +77,25 @@ class HotelPublicService(
     @Cacheable(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_ID], key = "#hotelId")
     @Transactional(readOnly = true)
     fun getActiveById(hotelId: UUID): Hotel {
-        val hotel = hotelRepository.findByIdAndStatus(hotelId, EntityStatus.ACTIVE)
-            .orElseThrow { ResourceNotFoundException("Hotel not found") }
-            .toDomain()
-        val destination = destinationRepository.findById(hotel.destinationId)
-            .orElseThrow { ResourceNotFoundException("Destination not found") }
-        if (destination.status != EntityStatus.ACTIVE) {
-            throw ResourceNotFoundException("Hotel not found")
+        logger.debug("Fetching active hotel", mapOf("hotelId" to hotelId))
+        try {
+            val hotel = hotelRepository.findByIdAndStatus(hotelId, EntityStatus.ACTIVE)
+                .orElseThrow { ResourceNotFoundException("Hotel not found") }
+                .toDomain()
+            val destination = destinationRepository.findById(hotel.destinationId)
+                .orElseThrow { ResourceNotFoundException("Destination not found") }
+            if (destination.status != EntityStatus.ACTIVE) {
+                logger.warn("Hotel destination inactive", mapOf("hotelId" to hotelId, "destinationId" to hotel.destinationId))
+                throw ResourceNotFoundException("Hotel not found")
+            }
+            logger.debug("Hotel fetched successfully", mapOf("hotelId" to hotelId, "name" to hotel.name))
+            return hotel
+        } catch (e: ResourceNotFoundException) {
+            logger.debug("Hotel not found", mapOf("hotelId" to hotelId))
+            throw e
+        } catch (e: Exception) {
+            logger.error("Error fetching hotel", mapOf("hotelId" to hotelId), e)
+            throw e
         }
-        return hotel
     }
 }

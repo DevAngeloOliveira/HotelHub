@@ -23,7 +23,7 @@ class SdkConfigManager {
 
   private resolveBaseUrl(): string {
     // Cliente (browser/mobile)
-    if (typeof window !== 'undefined') {
+    if (globalThis.window !== undefined) {
       return (
         process.env.NEXT_PUBLIC_API_BASE_URL ||
         process.env.EXPO_PUBLIC_API_BASE_URL ||

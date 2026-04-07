@@ -8,7 +8,7 @@ import { ErrorHandler } from './errors'
 import { FetchOptions, HttpError } from '../types/common'
 
 export class HttpClient {
-  private defaultHeaders: Record<string, string> = {
+  private readonly defaultHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
   }
 
@@ -58,7 +58,8 @@ export class HttpClient {
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          url.searchParams.append(key, String(value))
+          const stringValue = typeof value === 'string' ? value : JSON.stringify(value)
+          url.searchParams.append(key, stringValue)
         }
       })
     }
@@ -78,33 +79,8 @@ export class HttpClient {
 
     for (let attempt = 0; attempt <= config.retryAttempts; attempt++) {
       try {
-        const controller = new AbortController()
-        const timeoutId = setTimeout(
-          () => controller.abort(),
-          options.timeout || config.timeout
-        )
-
-        const response = await fetch(url, {
-          method: options.method || 'GET',
-          headers: options.headers,
-          body: options.body ? JSON.stringify(options.body) : undefined,
-          signal: controller.signal,
-        })
-
-        clearTimeout(timeoutId)
-
-        if (!response.ok) {
-          const apiError = await ErrorHandler.parseError(response)
-
-          if (response.status === 401) {
-            this.onTokenExpired?.()
-          }
-
-          throw ErrorHandler.createHttpError(response.status, apiError)
-        }
-
-        const data = await response.json()
-        return data as T
+        const data = await this.executeFetch<T>(url, options)
+        return data
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error))
 
@@ -115,14 +91,67 @@ export class HttpClient {
 
         // Retry com delay
         if (attempt < config.retryAttempts) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, config.retryDelay * Math.pow(2, attempt))
-          )
+          await this.delayRetry(attempt, config.retryDelay)
         }
       }
     }
 
     throw lastError || new Error('Unknown error')
+  }
+
+  /**
+   * Executar requisição HTTP
+   */
+  private async executeFetch<T>(
+    url: string,
+    options: FetchOptions & { headers: Record<string, string> }
+  ): Promise<T> {
+    const config = configManager.getConfig()
+    const controller = new AbortController()
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      options.timeout || config.timeout
+    )
+
+    try {
+      const response = await fetch(url, {
+        method: options.method || 'GET',
+        headers: options.headers,
+        body: options.body ? JSON.stringify(options.body) : undefined,
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      return await this.handleResponse<T>(response)
+    } finally {
+      clearTimeout(timeoutId)
+    }
+  }
+
+  /**
+   * Processar resposta HTTP
+   */
+  private async handleResponse<T>(response: Response): Promise<T> {
+    if (!response.ok) {
+      const apiError = await ErrorHandler.parseError(response)
+
+      if (response.status === 401) {
+        this.onTokenExpired?.()
+      }
+
+      throw ErrorHandler.createHttpError(response.status, apiError)
+    }
+
+    return response.json() as T
+  }
+
+  /**
+   * Delay com backoff exponencial
+   */
+  private delayRetry(attempt: number, baseDelay: number): Promise<void> {
+    const delay = baseDelay * Math.pow(2, attempt)
+    return new Promise((resolve) => setTimeout(resolve, delay))
   }
 
   /**

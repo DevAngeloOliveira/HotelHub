@@ -48,3 +48,13 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### Environment Variables ###
+# Local development environment files with sensitive data
+.env.local
+.env.local.*
+.env.dev
+.env.prod
+
+# Never commit local env files
+!.env.example  # BUT commit the example template

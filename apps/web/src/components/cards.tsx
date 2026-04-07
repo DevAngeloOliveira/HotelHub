@@ -63,7 +63,7 @@ export function HotelCard({
         className
       )}
     >
-      <div className="relative h-[220px] bg-linear-to-br from-(--hh-primary-600) via-(--hh-primary-700) to-(--hh-primary-900) overflow-hidden">
+      <div className="relative h-55 bg-linear-to-br from-(--hh-primary-600) via-(--hh-primary-700) to-(--hh-primary-900) overflow-hidden">
         {image ? (
           <Image src={image} alt={title} fill className="object-cover" />
         ) : (
