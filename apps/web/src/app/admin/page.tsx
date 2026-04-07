@@ -17,10 +17,10 @@ export default async function AdminDashboardPage() {
 
   if (user?.role !== "ADMIN") {
     return (
-      <SurfaceCard className="mx-auto flex max-w-[680px] flex-col items-center gap-4 p-10 text-center" variant="default">
+      <SurfaceCard className="mx-auto flex max-w-170 flex-col items-center gap-4 p-10 text-center" variant="default">
         <Badge tone="error">Acesso restrito</Badge>
-        <h2 className="hh-display text-[36px] leading-[42px] text-[var(--hh-text)]">Area administrativa bloqueada</h2>
-        <p className="max-w-xl text-[15px] leading-[24px] text-[var(--hh-text-muted)]">
+        <h2 className="hh-display text-9 leading-10.5 text-(--hh-text)">Area administrativa bloqueada</h2>
+        <p className="max-w-xl text-3.75 leading-6 text-(--hh-text-muted)">
           Apenas perfis ADMIN podem consultar operacoes, estoque e acesso rapido aos endpoints internos.
         </p>
         <Button href="/" variant="primary">Voltar para a home</Button>
@@ -43,8 +43,8 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       <SectionHeader
-        eyebrow="Ops center"
-        title="Admin dashboard"
+        eyebrow="Central de operações"
+        title="Painel de administração"
         subtitle="Painel inicial para operacao do catalogo, reservas e usuarios. Os CRUDs continuam expostos pela API documentada e o front fica pronto para crescer sobre estes contratos."
       />
 
@@ -63,22 +63,22 @@ export default async function AdminDashboardPage() {
 
       <section className="grid gap-5 xl:grid-cols-3">
         <AdminActionCard
-          title="Destinations"
-          description="Criacao, atualizacao e inativacao de destinos do catalogo publico."
+          title="Destinos"
+          description="Criação, atualização e inativação de destinos do catálogo público."
           href="/api/v1/swagger-ui.html#/admin-destination-controller"
           cta="Abrir endpoints"
           tone="primary"
         />
         <AdminActionCard
-          title="Hotels and rooms"
-          description="Catalogo, capacidade e status operacional de hoteis e quartos."
+          title="Hotéis e quartos"
+          description="Catálogo, capacidade e status operacional de hotéis e quartos."
           href="/api/v1/swagger-ui.html#/admin-hotel-controller"
           cta="Abrir endpoints"
           tone="accentGold"
         />
         <AdminActionCard
-          title="Reservations and users"
-          description="Consulta global de reservas, ownership e usuarios cadastrados."
+          title="Reservas e usuários"
+          description="Consulta global de reservas, propriedade e usuários cadastrados."
           href="/api/v1/swagger-ui.html#/admin-reservation-controller"
           cta="Abrir swagger"
           tone="secondary"
@@ -104,12 +104,12 @@ function AdminActionCard({
   return (
     <SurfaceCard className="space-y-5" variant="default">
       <div className="space-y-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--hh-text-subtle)]">Modulo</p>
-        <h3 className="text-[24px] font-semibold text-[var(--hh-text)]">{title}</h3>
-        <p className="text-[15px] leading-[24px] text-[var(--hh-text-muted)]">{description}</p>
+        <p className="text-3 font-semibold uppercase tracking-[0.24em] text-(--hh-text-subtle)">Modulo</p>
+        <h3 className="text-6 font-semibold text-(--hh-text)">{title}</h3>
+        <p className="text-3.75 leading-6 text-(--hh-text-muted)">{description}</p>
       </div>
-      <div className="flex items-center justify-between gap-4 border-t border-[var(--hh-border)] pt-4">
-        <Link href={href} target="_blank" rel="noreferrer" className="text-sm font-medium text-[var(--hh-primary-action)] hover:text-[var(--hh-primary-action-hover)]">
+      <div className="flex items-center justify-between gap-4 border-t border-(--hh-border) pt-4">
+        <Link href={href} target="_blank" rel="noreferrer" className="text-sm font-medium text-(--hh-primary-action) hover:text-(--hh-primary-action-hover)">
           Swagger
         </Link>
         <Button href={href} variant={tone}>

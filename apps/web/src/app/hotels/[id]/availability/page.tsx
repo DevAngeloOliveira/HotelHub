@@ -44,16 +44,16 @@ export default async function HotelAvailabilityPage({ params, searchParams }: Av
             <SectionHeader
               eyebrow="Disponibilidade"
               title={hotel.name}
-              subtitle="Selecione o periodo e a ocupacao. O retorno desta tela ja considera quantidade disponivel por tipo de quarto."
+              subtitle="Selecione o período e a ocupação. O retorno desta tela já considera quantidade disponível por tipo de quarto."
             />
             <AlertBanner
               tone="warning"
               title="Regra de estoque"
-              message="Apenas quartos reservaveis no periodo informado sao exibidos. Reservas confirmadas sobrepostas reduzem o saldo disponivel."
+              message="Apenas quartos reserváveis no período informado são exibidos. Reservas confirmadas sobrepostas reduzem o saldo disponível."
             />
           </div>
 
-          <form className="grid gap-4 rounded-[24px] bg-[var(--hh-surface)] p-5 shadow-[var(--hh-shadow-sm)]">
+          <form className="grid gap-4 rounded-3xl bg-(--hh-surface) p-5 shadow-(--hh-shadow-sm)">
             <DateRangeField
               className="md:grid-cols-1"
               checkInDefaultValue={checkInDate}
@@ -70,7 +70,7 @@ export default async function HotelAvailabilityPage({ params, searchParams }: Av
       {rooms.length > 0 ? (
         <section className="space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm text-[var(--hh-text-muted)]">
+            <p className="text-sm text-(--hh-text-muted)">
               {rooms.length} categoria{rooms.length === 1 ? "" : "s"} encontrada{rooms.length === 1 ? "" : "s"} para {guestCount} hospede{guestCount === 1 ? "" : "s"}.
             </p>
             <Button href={`/hotels/${hotel.id}`} variant="secondary">
@@ -91,8 +91,8 @@ export default async function HotelAvailabilityPage({ params, searchParams }: Av
         </section>
       ) : (
         <EmptyState
-          title="Nenhum quarto disponivel"
-          message="Tente um periodo diferente ou reduza a ocupacao para encontrar novas opcoes."
+          title="Nenhum quarto disponível"
+          message="Tente um período diferente ou reduza a ocupação para encontrar novas opções."
           actionLabel="Ajustar filtros"
           actionHref={`/hotels/${hotel.id}/availability?checkInDate=${toIsoDate(addDays(today, 14))}&checkOutDate=${toIsoDate(addDays(today, 17))}&guestCount=2`}
           secondaryLabel="Voltar para o hotel"

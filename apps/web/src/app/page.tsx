@@ -17,41 +17,41 @@ const fallbackFeaturedDestinations: HomeFeaturedDestination[] = [
     id: "paris",
     href: "/destinations",
     city: "Paris",
-    country: "France",
+    country: "França",
     imageUrl:
       "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=900&q=80",
-    availabilityLabel: "247 hotels available",
-    priceLabel: "$89",
+    availabilityLabel: "247 hotéis disponíveis",
+    priceLabel: "R$ 445",
   },
   {
     id: "santorini",
     href: "/destinations",
     city: "Santorini",
-    country: "Greece",
+    country: "Grécia",
     imageUrl:
       "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=900&q=80",
-    availabilityLabel: "184 hotels available",
-    priceLabel: "$124",
+    availabilityLabel: "184 hotéis disponíveis",
+    priceLabel: "R$ 620",
   },
   {
     id: "maldives",
     href: "/destinations",
-    city: "Maldives",
-    country: "Brazil",
+    city: "Maldivas",
+    country: "Maldivas",
     imageUrl:
       "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=900&q=80",
-    availabilityLabel: "96 resorts available",
-    priceLabel: "$290",
+    availabilityLabel: "96 resorts disponíveis",
+    priceLabel: "R$ 1.450",
   },
   {
     id: "tokyo",
     href: "/destinations",
-    city: "Tokyo",
-    country: "Japan",
+    city: "Tóquio",
+    country: "Japão",
     imageUrl:
       "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=900&q=80",
-    availabilityLabel: "412 hotels available",
-    priceLabel: "$72",
+    availabilityLabel: "412 hotéis disponíveis",
+    priceLabel: "R$ 360",
   },
 ];
 
@@ -62,13 +62,13 @@ const fallbackRecommendedHotels: HomeRecommendedHotel[] = [
     name: "Grand Palace Resort & Spa",
     imageUrl:
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
-    badge: "Featured",
+    badge: "Em destaque",
     badgeTone: "gold",
     rating: "4.9",
     reviews: "312",
-    location: "Santorini, Greece",
-    amenities: ["Pool", "Breakfast", "WiFi"],
-    priceLabel: "$248",
+    location: "Santorini, Grécia",
+    amenities: ["Piscina", "Café da manhã", "WiFi"],
+    priceLabel: "R$ 1.240",
   },
   {
     id: "maison-elegante",
@@ -76,13 +76,13 @@ const fallbackRecommendedHotels: HomeRecommendedHotel[] = [
     name: "Maison Elegante Paris",
     imageUrl:
       "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
-    badge: "Best Value",
+    badge: "Melhor preço",
     badgeTone: "success",
     rating: "4.7",
     reviews: "189",
-    location: "Paris, France",
-    amenities: ["Concierge", "Restaurant", "Gym"],
-    priceLabel: "$156",
+    location: "Paris, França",
+    amenities: ["Concierge", "Restaurante", "Academia"],
+    priceLabel: "R$ 780",
   },
   {
     id: "azure-maldives",
@@ -94,16 +94,16 @@ const fallbackRecommendedHotels: HomeRecommendedHotel[] = [
     badgeTone: "primary",
     rating: "5.0",
     reviews: "94",
-    location: "North Male Atoll, Maldives",
-    amenities: ["Diving", "Boat", "Spa"],
-    priceLabel: "$540",
+    location: "North Male Atoll, Maldivas",
+    amenities: ["Mergulho", "Barco", "Spa"],
+    priceLabel: "R$ 2.700",
   },
 ];
 
-const destinationRateFallback = ["$89", "$124", "$290", "$72"];
+const destinationRateFallback = ["R$ 445", "R$ 620", "R$ 1.450", "R$ 360"];
 const hotelBadgeFallback = [
-  { label: "Featured", tone: "gold" as const },
-  { label: "Best Value", tone: "success" as const },
+  { label: "Em destaque", tone: "gold" as const },
+  { label: "Melhor preço", tone: "success" as const },
   { label: "Popular", tone: "primary" as const },
 ];
 const hotelRatingFallback = [
@@ -141,13 +141,13 @@ export default async function HomePage() {
 
       <section
         id="featured-destinations"
-        className="scroll-mt-28 px-5 py-20 md:px-8 xl:px-[120px]"
+        className="scroll-mt-28 px-5 py-20 md:px-8 xl:px-30"
       >
-        <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10">
+        <div className="mx-auto flex w-full max-w-360 flex-col gap-10">
           <HomeSectionHeader
-            eyebrow="EXPLORE THE WORLD"
-            title="Featured destinations"
-            linkLabel="View all destinations ->"
+            eyebrow="EXPLORE O MUNDO"
+            title="Destinos em destaque"
+            linkLabel="Ver todos os destinos ->"
             linkHref="/destinations"
           />
 
@@ -161,13 +161,13 @@ export default async function HomePage() {
 
       <section
         id="recommended-hotels"
-        className="scroll-mt-28 px-5 pb-20 md:px-8 xl:px-[120px]"
+        className="scroll-mt-28 px-5 pb-20 md:px-8 xl:px-30"
       >
-        <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10">
+        <div className="mx-auto flex w-full max-w-360 flex-col gap-10">
           <HomeSectionHeader
-            eyebrow="HANDPICKED FOR YOU"
-            title="Recommended hotels"
-            linkLabel="View all hotels ->"
+            eyebrow="SELECIONADO PARA VOCÊ"
+            title="Hotéis recomendados"
+            linkLabel="Ver todos os hotéis ->"
             linkHref="/destinations"
           />
 
@@ -203,7 +203,7 @@ async function buildFeaturedDestinations(
             detail.imageUrl ||
             fallbackFeaturedDestinations[index]?.imageUrl ||
             fallbackFeaturedDestinations[0].imageUrl,
-          availabilityLabel: `${detail.hotels.length || index + 1} hotel${detail.hotels.length === 1 ? "" : "s"} available`,
+          availabilityLabel: `${detail.hotels.length || index + 1} hotel${detail.hotels.length === 1 ? "" : "s"} disponível${detail.hotels.length === 1 ? "" : "s"}`,
           priceLabel: destinationRateFallback[index] ?? destinationRateFallback[0],
         } satisfies HomeFeaturedDestination;
       } catch {
@@ -217,7 +217,7 @@ async function buildFeaturedDestinations(
             destination.imageUrl ||
             fallbackFeaturedDestinations[index]?.imageUrl ||
             fallbackFeaturedDestinations[0].imageUrl,
-          availabilityLabel: `${120 + index * 37} hotels available`,
+          availabilityLabel: `${120 + index * 37} hotéis disponíveis`,
           priceLabel: destinationRateFallback[index] ?? destinationRateFallback[0],
         } satisfies HomeFeaturedDestination;
       }
@@ -250,7 +250,7 @@ async function buildRecommendedHotels(
           reviews: hotelRatingFallback[index]?.reviews ?? "120",
           location: detail.address,
           amenities: detail.amenities.slice(0, 3),
-          priceLabel: startingRate ? formatUsdLike(startingRate) : fallbackRecommendedHotels[index]?.priceLabel || "$180",
+          priceLabel: startingRate ? formatUsdLike(startingRate) : fallbackRecommendedHotels[index]?.priceLabel || "R$ 900",
         } satisfies HomeRecommendedHotel;
       } catch {
         return {
@@ -264,7 +264,7 @@ async function buildRecommendedHotels(
           reviews: hotelRatingFallback[index]?.reviews ?? "120",
           location: hotel.address,
           amenities: hotel.amenities.slice(0, 3),
-          priceLabel: fallbackRecommendedHotels[index]?.priceLabel || "$180",
+          priceLabel: fallbackRecommendedHotels[index]?.priceLabel || "R$ 900",
         } satisfies HomeRecommendedHotel;
       }
     }),
@@ -274,5 +274,5 @@ async function buildRecommendedHotels(
 }
 
 function formatUsdLike(value: number): string {
-  return `$${Math.round(value)}`;
+  return `R$ ${Math.round(value)}`;
 }

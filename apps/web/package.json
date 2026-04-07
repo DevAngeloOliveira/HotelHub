@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@hotelhub/design-tokens": "1.0.0",
+    "@tanstack/react-query": "^5.96.2",
+    "@tanstack/react-query-devtools": "^5.96.2",
     "next": "^15.5.8",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

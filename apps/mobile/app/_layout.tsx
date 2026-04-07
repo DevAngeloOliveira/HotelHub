@@ -12,6 +12,8 @@ import { PlayfairDisplay_700Bold } from "@expo-google-fonts/playfair-display";
 import { ActivityIndicator, View } from "react-native";
 import { Toast } from "../src/components/primitives";
 import { HotelHubProvider, useHotelHub } from "../src/state/hotelhub-provider";
+import { QueryProvider } from "../src/providers/query-provider";
+import { useSdkInitializer } from "../src/hooks/use-sdk-initializer";
 import { colors } from "../src/theme/tokens";
 
 export default function RootLayout() {
@@ -32,11 +34,19 @@ export default function RootLayout() {
   }
 
   return (
-    <HotelHubProvider>
-      <StatusBar style="dark" />
-      <AppShell />
-    </HotelHubProvider>
+    <QueryProvider>
+      <HotelHubProvider>
+        <SDKInitializerWrapper />
+        <StatusBar style="dark" />
+        <AppShell />
+      </HotelHubProvider>
+    </QueryProvider>
   );
+}
+
+function SDKInitializerWrapper() {
+  useSdkInitializer()
+  return null
 }
 
 const styles = {

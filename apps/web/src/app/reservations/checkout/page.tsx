@@ -95,25 +95,25 @@ export default async function ReservationCheckoutPage({ searchParams }: Checkout
           />
           <SurfaceCard className="space-y-4" variant="reservationSummary">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--hh-text-subtle)]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-(--hh-text-subtle)">
                 Politica de cancelamento
               </p>
-              <p className="mt-3 text-[16px] leading-[26px] text-[var(--hh-text-muted)]">
+              <p className="mt-3 text-[16px] leading-[26px] text-(--hh-text-muted)">
                 O cancelamento fica disponivel apenas antes da data de check-in. Depois disso a reserva permanece historica e nao pode ser alterada no MVP.
               </p>
             </div>
-            <div className="grid gap-3 rounded-[24px] bg-[var(--hh-surface)] p-5 shadow-[var(--hh-shadow-sm)]">
+            <div className="grid gap-3 rounded-[24px] bg-(--hh-surface) p-5 shadow-(--hh-shadow-sm)">
               <div className="flex items-center justify-between gap-4 text-sm">
-                <span className="text-[var(--hh-text-muted)]">Valor da diaria</span>
-                <span className="font-medium text-[var(--hh-text)]">{formatCurrency(room.pricePerNight)}</span>
+                <span className="text-(--hh-text-muted)">Valor da diaria</span>
+                <span className="font-medium text-(--hh-text)">{formatCurrency(room.pricePerNight)}</span>
               </div>
               <div className="flex items-center justify-between gap-4 text-sm">
-                <span className="text-[var(--hh-text-muted)]">Noites</span>
-                <span className="font-medium text-[var(--hh-text)]">{nights}</span>
+                <span className="text-(--hh-text-muted)">Noites</span>
+                <span className="font-medium text-(--hh-text)">{nights}</span>
               </div>
               <div className="flex items-center justify-between gap-4 text-sm">
-                <span className="text-[var(--hh-text-muted)]">Hospedes</span>
-                <span className="font-medium text-[var(--hh-text)]">{guestCount}</span>
+                <span className="text-(--hh-text-muted)">Hospedes</span>
+                <span className="font-medium text-(--hh-text)">{guestCount}</span>
               </div>
             </div>
           </SurfaceCard>
@@ -143,7 +143,7 @@ export default async function ReservationCheckoutPage({ searchParams }: Checkout
             <>
               <Link
                 href={`/hotels/${hotelId}/availability?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&guestCount=${guestCount}`}
-                className="inline-flex h-11 items-center justify-center rounded-[16px] border border-[var(--hh-border)] px-4 text-sm font-medium text-[var(--hh-text)] transition hover:bg-[var(--hh-surface-muted)]"
+                className="inline-flex h-11 items-center justify-center rounded-[16px] border border-(--hh-border) px-4 text-sm font-medium text-(--hh-text) transition hover:bg-(--hh-surface-muted)"
               >
                 Voltar
               </Link>

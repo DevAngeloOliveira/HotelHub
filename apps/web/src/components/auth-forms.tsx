@@ -10,8 +10,8 @@ export function AuthForms() {
   const [registerState, registerFormAction, registerPending] = useActionState(registerAction, null);
 
   return (
-    <SurfaceCard className="w-full max-w-[560px] rounded-[28px] p-8 md:p-10">
-      <div className="flex gap-2 rounded-full bg-[var(--hh-surface-muted)] p-1">
+    <SurfaceCard className="w-full max-w-140 rounded-7xl p-8 md:p-10">
+      <div className="flex gap-2 rounded-full bg-(--hh-surface-muted) p-1">
         {(["login", "register"] as const).map((mode) => {
           const active = tab === mode;
           return (
@@ -22,8 +22,8 @@ export function AuthForms() {
               className={[
                 "flex-1 rounded-full px-4 py-3 text-sm font-medium transition",
                 active
-                  ? "bg-[var(--hh-primary-action)] text-white shadow-[var(--hh-shadow-sm)]"
-                  : "text-[var(--hh-text-muted)] hover:text-[var(--hh-text)]",
+                  ? "bg-(--hh-primary-action) text-white shadow-(--hh-shadow-sm)"
+                  : "text-(--hh-text-muted) hover:text-(--hh-text)",
               ].join(" ")}
             >
               {mode === "login" ? "Entrar" : "Criar conta"}
@@ -35,7 +35,7 @@ export function AuthForms() {
       {tab === "login" ? (
         <form action={loginFormAction} className="mt-8 space-y-5">
           {loginState?.error ? (
-            <p className="rounded-[16px] bg-[var(--hh-status-error-bg)] px-4 py-3 text-sm text-[var(--hh-status-error-fg)]">
+            <p className="rounded-2xl bg-(--hh-status-error-bg) px-4 py-3 text-sm text-(--hh-status-error-fg)">
               {loginState.error}
             </p>
           ) : null}
@@ -54,7 +54,7 @@ export function AuthForms() {
       ) : (
         <form action={registerFormAction} className="mt-8 space-y-5">
           {registerState?.error ? (
-            <p className="rounded-[16px] bg-[var(--hh-status-error-bg)] px-4 py-3 text-sm text-[var(--hh-status-error-fg)]">
+            <p className="rounded-2xl bg-(--hh-status-error-bg) px-4 py-3 text-sm text-(--hh-status-error-fg)">
               {registerState.error}
             </p>
           ) : null}

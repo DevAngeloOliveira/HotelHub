@@ -20,15 +20,15 @@ export default async function MyReservationsPage() {
   return (
     <div className="space-y-8">
       <SectionHeader
-        eyebrow="Historico"
+        eyebrow="Histórico"
         title="Minhas reservas"
-        subtitle="Acompanhe o status das reservas confirmadas e cancele apenas as reservas cujo check-in ainda nao ocorreu."
+        subtitle="Acompanhe o status das reservas confirmadas e cancele apenas as reservas cujo check-in ainda não ocorreu."
       />
 
       {reservations.length === 0 ? (
         <EmptyState
           title="Nenhuma reserva encontrada"
-          message="Suas proximas reservas aparecerao aqui assim que um checkout for concluido."
+          message="Suas próximas reservas aparecerão aqui assim que um checkout for concluído."
           actionLabel="Explorar destinos"
           actionHref="/destinations"
         />
@@ -41,39 +41,39 @@ export default async function MyReservationsPage() {
                 <div className="space-y-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--hh-text-subtle)]">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-(--hh-text-subtle)">
                         Reserva {reservation.id}
                       </p>
-                      <h3 className="mt-3 text-[24px] font-semibold text-[var(--hh-text)]">
-                        {reservation.checkInDate} ate {reservation.checkOutDate}
+                      <h3 className="mt-3 text-[24px] font-semibold text-(--hh-text)">
+                        {reservation.checkInDate} até {reservation.checkOutDate}
                       </h3>
                     </div>
                     <Badge tone={isCancelled ? "error" : "success"}>{reservation.status}</Badge>
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                    <InfoItem label="Hotel ID" value={reservation.hotelId} />
-                    <InfoItem label="Quarto ID" value={reservation.roomId} />
-                    <InfoItem label="Hospedes" value={reservation.guestCount} />
+                    <InfoItem label="ID do Hotel" value={reservation.hotelId} />
+                    <InfoItem label="ID do Quarto" value={reservation.roomId} />
+                    <InfoItem label="Hóspedes" value={reservation.guestCount} />
                     <InfoItem label="Criada em" value={reservation.createdAt.slice(0, 10)} />
                   </div>
                 </div>
 
-                <div className="flex flex-col justify-between gap-4 rounded-[24px] bg-[var(--hh-surface-muted)] p-5">
+                <div className="flex flex-col justify-between gap-4 rounded-3xl bg-(--hh-surface-muted) p-5">
                   <div>
-                    <p className="text-sm text-[var(--hh-text-muted)]">Valor total</p>
-                    <p className="mt-2 text-[32px] font-semibold text-[var(--hh-primary-action)]">
+                    <p className="text-sm text-(--hh-text-muted)">Valor total</p>
+                    <p className="mt-2 text-[32px] font-semibold text-(--hh-primary-action)">
                       {formatCurrency(reservation.totalAmount)}
                     </p>
                     {reservation.cancelledAt ? (
-                      <p className="mt-2 text-sm text-[var(--hh-text-muted)]">
+                      <p className="mt-2 text-sm text-(--hh-text-muted)">
                         Cancelada em {reservation.cancelledAt.slice(0, 10)}
                       </p>
                     ) : null}
                   </div>
 
                   {isCancelled ? (
-                    <span className="inline-flex h-11 items-center justify-center rounded-[16px] bg-white px-4 text-sm font-medium text-[var(--hh-text-muted)]">
+                    <span className="inline-flex h-11 items-center justify-center rounded-2xl bg-white px-4 text-sm font-medium text-(--hh-text-muted)">
                       Reserva encerrada
                     </span>
                   ) : (
@@ -91,9 +91,9 @@ export default async function MyReservationsPage() {
 
 function InfoItem({ label, value }: Readonly<{ label: string; value: string | number }>) {
   return (
-    <div className="rounded-[20px] bg-[var(--hh-surface-muted)] p-4">
-      <p className="text-xs uppercase tracking-[0.16em] text-[var(--hh-text-subtle)]">{label}</p>
-      <p className="mt-2 break-all text-sm font-medium text-[var(--hh-text)]">{value}</p>
+    <div className="rounded-3xl bg-(--hh-surface-muted) p-4">
+      <p className="text-xs uppercase tracking-[0.16em] text-(--hh-text-subtle)">{label}</p>
+      <p className="mt-2 break-all text-sm font-medium text-(--hh-text)">{value}</p>
     </div>
   );
 }

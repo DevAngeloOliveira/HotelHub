@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
+import type { ReactNode } from "react";
 import { Inter, Playfair_Display } from "next/font/google";
 import { createWebCssVariables } from "@hotelhub/design-tokens";
 import { PageShell } from "@/components/page-shell";
-import { getMe } from "@/lib/api";
 import { getAuthToken } from "@/lib/auth";
-import type { UserProfile } from "@/lib/types";
+import { QueryProvider } from "@/providers/query-provider";
 import "./globals.css";
+import type { UserProfile } from "@hotelhub/sdk";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,31 +24,38 @@ export const metadata: Metadata = {
   description: "HotelHub Web - discover destinations and book rooms",
 };
 
-const themeStyles = {
-  ...createWebCssVariables(),
-  "--hh-font-display": "var(--font-playfair)",
-  "--hh-font-ui": "var(--font-inter)",
-} as CSSProperties;
+const themeCss = [
+  ...Object.entries(createWebCssVariables()),
+  ["--hh-font-display", "var(--font-playfair)"],
+  ["--hh-font-ui", "var(--font-inter)"],
+]
+  .map(([k, v]) => `${k}:${v}`)
+  .join(";");
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   let user: UserProfile | undefined;
   try {
     const token = await getAuthToken();
     if (token) {
-      user = await getMe(token);
+      // SSR user fetch removed, will use useAuth hook client-side instead
+      // This keeps auth data in sync with SDK
     }
   } catch {
     // no auth or token expired
   }
 
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${playfair.variable} h-full antialiased`}>
-      <body className="min-h-full font-sans" style={themeStyles}>
-        <PageShell user={user}>{children}</PageShell>
+    <html lang="pt-BR" suppressHydrationWarning className={`${inter.variable} ${playfair.variable} h-full antialiased`}>
+      {/* eslint-disable-next-line react/no-danger */}
+      <style dangerouslySetInnerHTML={{ __html: `:root{${themeCss}}` }} />
+      <body className="min-h-full font-sans">
+        <QueryProvider>
+          <PageShell user={user}>{children}</PageShell>
+        </QueryProvider>
       </body>
     </html>
   );

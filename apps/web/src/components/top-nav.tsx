@@ -8,17 +8,17 @@ import { cx } from "@/lib/cx";
 import type { UserProfile } from "@/lib/types";
 
 const links = [
-  { href: "/", label: "Home" },
+  { href: "/", label: "Início" },
   { href: "/destinations", label: "Destinos" },
   { href: "/reservations", label: "Reservas" },
   { href: "/admin", label: "Admin" },
 ];
 
 const homeLinks = [
-  { href: "/#featured-destinations", label: "Destinations" },
-  { href: "/#recommended-hotels", label: "Hotels" },
-  { href: "/#home-cta", label: "Offers" },
-  { href: "/#why-hotelhub", label: "About" },
+  { href: "/#featured-destinations", label: "Destinos" },
+  { href: "/#recommended-hotels", label: "Hotéis" },
+  { href: "/#home-cta", label: "Ofertas" },
+  { href: "/#why-hotelhub", label: "Sobre" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -31,13 +31,13 @@ export function TopNav({ user }: Readonly<{ user?: UserProfile }>) {
 
   if (isHome) {
     return (
-      <header className="sticky top-0 z-40 border-b border-[var(--hh-border)] bg-white shadow-[var(--hh-shadow-sm)]">
-        <div className="mx-auto flex h-[72px] w-full max-w-[1440px] items-center justify-between gap-8 px-5 md:px-8 xl:px-[120px]">
-          <Link href="/" className="flex items-center gap-[10px]">
-            <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#1F4FD6] text-[16px] font-bold text-white">
-              H
+      <header className="sticky top-0 z-40 border-b border-(--hh-border) bg-white shadow-(--hh-shadow-sm)">
+        <div className="mx-auto flex h-18 w-full max-w-360 items-center justify-between gap-8 px-5 md:px-8 xl:px-30">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-2.5 bg-[#1F4FD6] text-base font-bold text-white">
+              HH
             </div>
-            <span className="hh-display text-[22px] leading-[33px] text-[#14181F]">HotelHub</span>
+            <span className="hh-display text-5.5 leading-8.25 text-[#14181F]">HotelHub</span>
           </Link>
 
           <nav className="hidden items-center gap-8 lg:flex">
@@ -45,7 +45,7 @@ export function TopNav({ user }: Readonly<{ user?: UserProfile }>) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-[15px] font-medium leading-[22.5px] text-[#5C6675] transition hover:text-[#14181F]"
+                className="text-3.75 font-medium leading-5.625 text-[#5C6675] transition hover:text-[#14181F]"
               >
                 {link.label}
               </Link>
@@ -54,19 +54,19 @@ export function TopNav({ user }: Readonly<{ user?: UserProfile }>) {
 
           {user ? (
             <div className="flex items-center gap-3">
-              <div className="hidden items-center gap-3 rounded-[12px] border border-[var(--hh-border)] px-3 py-2 md:flex">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--hh-primary-50)] text-sm font-semibold text-[var(--hh-primary-action)]">
+              <div className="hidden items-center gap-3 rounded-xl border border-(--hh-border) px-3 py-2 md:flex">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-(--hh-primary-50) text-sm font-semibold text-(--hh-primary-action)">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-[var(--hh-text)]">{user.name}</p>
-                  <p className="truncate text-xs text-[var(--hh-text-muted)]">{user.email}</p>
+                  <p className="truncate text-sm font-medium text-(--hh-text)">{user.name}</p>
+                  <p className="truncate text-xs text-(--hh-text-muted)">{user.email}</p>
                 </div>
                 <Badge tone={user.role === "ADMIN" ? "premium" : "info"}>{user.role}</Badge>
               </div>
               <Link
                 href={user.role === "ADMIN" ? "/admin" : "/reservations"}
-                className="inline-flex h-10 items-center justify-center rounded-[12px] bg-[#1F4FD6] px-5 text-[14px] font-medium leading-[21px] text-white transition hover:bg-[#173ea9]"
+                className="inline-flex h-10 items-center justify-center rounded-xl bg-[#1F4FD6] px-5 text-sm font-medium leading-5.25 text-white transition hover:bg-[#173ea9]"
               >
                 Dashboard
               </Link>
@@ -75,15 +75,15 @@ export function TopNav({ user }: Readonly<{ user?: UserProfile }>) {
             <div className="flex items-center gap-3">
               <Link
                 href="/login"
-                className="inline-flex h-10 items-center justify-center rounded-[12px] border border-[#D0D7E2] px-[21px] text-[14px] font-medium leading-[21px] text-[#14181F] transition hover:border-[#BFC8D6] hover:bg-[#F8F9FB]"
+                className="inline-flex h-10 items-center justify-center rounded-xl border border-[#D0D7E2] px-5.25 text-sm font-medium leading-5.25 text-[#14181F] transition hover:border-[#BFC8D6] hover:bg-[#F8F9FB]"
               >
-                Sign in
+                Entrar
               </Link>
               <Link
                 href="/login"
-                className="inline-flex h-10 items-center justify-center rounded-[12px] bg-[#1F4FD6] px-5 text-[14px] font-medium leading-[21px] text-white transition hover:bg-[#173ea9]"
+                className="inline-flex h-10 items-center justify-center rounded-xl bg-[#1F4FD6] px-5 text-sm font-medium leading-5.25 text-white transition hover:bg-[#173ea9]"
               >
-                Get started
+                Começar
               </Link>
             </div>
           )}
@@ -93,15 +93,15 @@ export function TopNav({ user }: Readonly<{ user?: UserProfile }>) {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-[var(--hh-border)]/80 bg-white/78 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 border-b border-(--hh-border)/80 bg-white/78 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-5 py-4 md:flex-row md:items-center md:justify-between md:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-[linear-gradient(180deg,var(--hh-primary-500),var(--hh-primary-700))] text-sm font-semibold text-white shadow-[var(--hh-shadow-sm)]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[linear-gradient(180deg,var(--hh-primary-500),var(--hh-primary-700))] text-sm font-semibold text-white shadow-(--hh-shadow-sm)">
             H
           </div>
           <div>
-            <p className="hh-display text-[28px] leading-none text-[var(--hh-text)]">HotelHub</p>
-            <p className="mt-1 text-xs uppercase tracking-[0.2em] text-[var(--hh-text-subtle)]">
+            <p className="hh-display text-7 leading-none text-(--hh-text)">HotelHub</p>
+            <p className="mt-1 text-xs uppercase tracking-[0.2em] text-(--hh-text-subtle)\">
               Design-driven booking
             </p>
           </div>
@@ -118,8 +118,8 @@ export function TopNav({ user }: Readonly<{ user?: UserProfile }>) {
                   className={cx(
                     "rounded-full px-4 py-2 text-sm font-medium transition",
                     active
-                      ? "bg-[var(--hh-primary-action)] text-white shadow-[var(--hh-shadow-sm)]"
-                      : "text-[var(--hh-text-muted)] hover:bg-[var(--hh-surface-muted)] hover:text-[var(--hh-text)]",
+                      ? "bg-(--hh-primary-action) text-white shadow-(--hh-shadow-sm)"
+                      : "text-(--hh-text-muted) hover:bg-(--hh-surface-muted) hover:text-(--hh-text)",
                   )}
                 >
                   {link.label}
@@ -129,14 +129,14 @@ export function TopNav({ user }: Readonly<{ user?: UserProfile }>) {
           </nav>
 
           {user ? (
-            <div className="flex items-center justify-between gap-3 rounded-full border border-[var(--hh-border)] bg-white/70 px-3 py-2">
+            <div className="flex items-center justify-between gap-3 rounded-full border border-(--hh-border) bg-white/70 px-3 py-2">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--hh-primary-50)] text-sm font-semibold text-[var(--hh-primary-action)]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-(--hh-primary-50) text-sm font-semibold text-(--hh-primary-action)">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="hidden min-w-0 sm:block">
-                  <p className="truncate text-sm font-medium text-[var(--hh-text)]">{user.name}</p>
-                  <p className="truncate text-xs text-[var(--hh-text-muted)]">{user.email}</p>
+                  <p className="truncate text-sm font-medium text-(--hh-text)">{user.name}</p>
+                  <p className="truncate text-xs text-(--hh-text-muted)">{user.email}</p>
                 </div>
               </div>
               <Badge tone={user.role === "ADMIN" ? "premium" : "info"}>{user.role}</Badge>

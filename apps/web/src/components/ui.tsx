@@ -7,32 +7,32 @@ import { formatCurrency } from "@/lib/format";
 import type { Destination, Hotel, Room } from "@/lib/types";
 
 const buttonVariantClass: Record<ButtonVariant, string> = {
-  primary: "bg-[var(--hh-primary-action)] text-[var(--hh-text-inverse)] hover:bg-[var(--hh-primary-action-hover)]",
+  primary: "bg-(--hh-primary-action) text-(--hh-text-inverse) hover:bg-(--hh-primary-action-hover)",
   secondary:
-    "bg-[var(--hh-surface)] text-[var(--hh-primary-action)] ring-1 ring-[var(--hh-primary-200)] hover:bg-[var(--hh-primary-50)]",
+    "bg-(--hh-surface) text-(--hh-primary-action) ring-1 ring-(--hh-primary-200) hover:bg-(--hh-primary-50)",
   ghost:
-    "bg-transparent text-[var(--hh-text)] ring-1 ring-[var(--hh-border)] hover:bg-[var(--hh-surface-muted)]",
+    "bg-transparent text-(--hh-text) ring-1 ring-(--hh-border) hover:bg-(--hh-surface-muted)",
   accentGold:
-    "bg-[var(--hh-accent-highlight)] text-[var(--hh-neutral-900)] hover:bg-[var(--hh-accent-highlight-hover)]",
+    "bg-(--hh-accent-highlight) text-(--hh-neutral-900) hover:bg-(--hh-accent-highlight-hover)",
   destructive:
-    "bg-[var(--hh-danger-action)] text-[var(--hh-text-inverse)] hover:bg-[var(--hh-danger-action-hover)]",
+    "bg-(--hh-danger-action) text-(--hh-text-inverse) hover:bg-(--hh-danger-action-hover)",
 };
 
 const buttonSizeClass: Record<ButtonSize, string> = {
   sm: "h-9 px-3.5 text-sm",
-  md: "h-11 px-[18px] text-sm",
-  lg: "h-[52px] px-6 text-base",
+  md: "h-11 px-4.5 text-sm",
+  lg: "h-13 px-6 text-base",
 };
 
 const badgeToneClass: Record<BadgeTone, string> = {
-  info: "bg-[var(--hh-status-info-bg)] text-[var(--hh-status-info-fg)]",
-  success: "bg-[var(--hh-status-success-bg)] text-[var(--hh-status-success-fg)]",
-  warning: "bg-[var(--hh-status-warning-bg)] text-[var(--hh-status-warning-fg)]",
-  error: "bg-[var(--hh-status-error-bg)] text-[var(--hh-status-error-fg)]",
-  premium: "bg-[var(--hh-accent-gold-100)] text-[var(--hh-accent-gold-700)]",
-  popular: "bg-[var(--hh-primary-100)] text-[var(--hh-primary-700)]",
-  fullyBooked: "bg-[var(--hh-error-50)] text-[var(--hh-error-700)]",
-  new: "bg-[var(--hh-neutral-100)] text-[var(--hh-neutral-700)]",
+  info: "bg-(--hh-status-info-bg) text-(--hh-status-info-fg)",
+  success: "bg-(--hh-status-success-bg) text-(--hh-status-success-fg)",
+  warning: "bg-(--hh-status-warning-bg) text-(--hh-status-warning-fg)",
+  error: "bg-(--hh-status-error-bg) text-(--hh-status-error-fg)",
+  premium: "bg-(--hh-accent-gold-100) text-(--hh-accent-gold-700)",
+  popular: "bg-(--hh-primary-100) text-(--hh-primary-700)",
+  fullyBooked: "bg-(--hh-error-50) text-(--hh-error-700)",
+  new: "bg-(--hh-neutral-100) text-(--hh-neutral-700)",
 };
 
 type ButtonProps = Readonly<{
@@ -54,8 +54,8 @@ export function buttonClassName(
   className?: string,
 ): string {
   return cx(
-    "inline-flex items-center justify-center gap-2 rounded-[16px] font-medium transition duration-150",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hh-primary-200)] focus-visible:ring-offset-2",
+    "inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-150",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--hh-primary-200) focus-visible:ring-offset-2",
     "disabled:pointer-events-none disabled:opacity-60",
     buttonSizeClass[size],
     buttonVariantClass[variant],
@@ -79,7 +79,7 @@ export function Button({
     <>
       {loading ? <Spinner /> : leadingIcon}
       <span>{children}</span>
-      {!loading ? trailingIcon : null}
+      {loading ? null : trailingIcon}
     </>
   );
 
@@ -134,7 +134,7 @@ export function TextField({
   const hint = errorText ?? helpText;
   return (
     <label className={cx("flex min-w-0 flex-col gap-2", className)}>
-      {label ? <span className="text-[13px] font-medium text-[var(--hh-text)]">{label}</span> : null}
+      {label ? <span className="text-xs font-medium text-(--hh-text)">{label}</span> : null}
       <input
         name={name}
         type={type}
@@ -146,20 +146,20 @@ export function TextField({
         readOnly={readOnly}
         aria-invalid={Boolean(errorText)}
         className={cx(
-          "h-[52px] rounded-[12px] border bg-[var(--hh-surface)] px-4 text-[15px] text-[var(--hh-text)] outline-none transition",
-          "placeholder:text-[var(--hh-text-subtle)]",
-          "focus:border-[var(--hh-primary-action)] focus:ring-4 focus:ring-[var(--hh-primary-100)]",
-          readOnly && "cursor-not-allowed bg-[var(--hh-surface-muted)] text-[var(--hh-text-muted)]",
+          "h-13 rounded-xl border bg-(--hh-surface) px-4 text-sm text-(--hh-text) outline-none transition",
+          "placeholder:text-(--hh-text-subtle)",
+          "focus:border-(--hh-primary-action) focus:ring-4 focus:ring-(--hh-primary-100)",
+          readOnly && "cursor-not-allowed bg-(--hh-surface-muted) text-(--hh-text-muted)",
           errorText
-            ? "border-[var(--hh-status-error-fg)] focus:border-[var(--hh-status-error-fg)] focus:ring-[var(--hh-status-error-bg)]"
-            : "border-[var(--hh-border)]",
+            ? "border-(--hh-status-error-fg) focus:border-(--hh-status-error-fg) focus:ring-(--hh-status-error-bg)"
+            : "border-(--hh-border)",
         )}
       />
       {hint ? (
         <span
           className={cx(
-            "text-[12px]",
-            errorText ? "text-[var(--hh-status-error-fg)]" : "text-[var(--hh-text-muted)]",
+            "text-xs",
+            errorText ? "text-(--hh-status-error-fg)" : "text-(--hh-text-muted)",
           )}
         >
           {hint}
@@ -220,7 +220,7 @@ export function SurfaceCard({
 }: SurfaceCardProps) {
   const variantClass = {
     default: "hh-surface",
-    interactive: "hh-surface hover:-translate-y-0.5 hover:shadow-[var(--hh-shadow-md)]",
+    interactive: "hh-surface hover:-translate-y-0.5 hover:shadow-(--hh-shadow-md)",
     hotel: "hh-surface bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.98))]",
     destination:
       "hh-surface bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(239,244,255,0.72))]",
@@ -231,7 +231,7 @@ export function SurfaceCard({
   return (
     <article
       className={cx(
-        "rounded-[20px] p-5 transition duration-200",
+        "rounded-2xl p-5 transition duration-200",
         variantClass,
         className,
       )}
@@ -251,7 +251,7 @@ export function Badge({ children, tone = "info", className }: BadgeProps) {
   return (
     <span
       className={cx(
-        "inline-flex h-[26px] items-center rounded-full px-3 text-[12px] font-medium",
+        "inline-flex h-6.5 items-center rounded-full px-3 text-xs font-medium",
         badgeToneClass[tone],
         className,
       )}
@@ -284,13 +284,13 @@ export function AlertBanner({
   return (
     <div
       className={cx(
-        "flex gap-4 rounded-[20px] border p-4",
-        tone === "info" && "border-[var(--hh-info-500)] bg-[var(--hh-status-info-bg)] text-[var(--hh-status-info-fg)]",
+        "flex gap-4 rounded-2xl border p-4",
+        tone === "info" && "border-(--hh-info-500) bg-(--hh-status-info-bg) text-(--hh-status-info-fg)",
         tone === "success" &&
-          "border-[var(--hh-success-500)] bg-[var(--hh-status-success-bg)] text-[var(--hh-status-success-fg)]",
+          "border-(--hh-success-500) bg-(--hh-status-success-bg) text-(--hh-status-success-fg)",
         tone === "warning" &&
-          "border-[var(--hh-warning-500)] bg-[var(--hh-status-warning-bg)] text-[var(--hh-status-warning-fg)]",
-        tone === "error" && "border-[var(--hh-error-500)] bg-[var(--hh-status-error-bg)] text-[var(--hh-status-error-fg)]",
+          "border-(--hh-warning-500) bg-(--hh-status-warning-bg) text-(--hh-status-warning-fg)",
+        tone === "error" && "border-(--hh-error-500) bg-(--hh-status-error-bg) text-(--hh-status-error-fg)",
         className,
       )}
     >
@@ -323,12 +323,12 @@ export function EmptyState({
   secondaryHref,
 }: EmptyStateProps) {
   return (
-    <SurfaceCard className="mx-auto flex max-w-[420px] flex-col items-center px-10 py-12 text-center" variant="default">
-      <div className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] bg-[linear-gradient(180deg,var(--hh-primary-50),#ffffff)] text-3xl">
+    <SurfaceCard className="mx-auto flex max-w-105 flex-col items-center px-10 py-12 text-center" variant="default">
+      <div className="flex h-18 w-18 items-center justify-center rounded-2xl bg-[linear-gradient(180deg,var(--hh-primary-50),#ffffff)] text-3xl">
         <span aria-hidden>?</span>
       </div>
-      <h3 className="hh-display mt-6 text-[34px] leading-[42px] text-[var(--hh-text)]">{title}</h3>
-      <p className="mt-4 max-w-[280px] text-[15px] leading-[24px] text-[var(--hh-text-muted)]">
+      <h3 className="hh-display mt-6 text-8.5 leading-10.5 text-(--hh-text)">{title}</h3>
+      <p className="mt-4 max-w-70 text-sm leading-6 text-(--hh-text-muted)">
         {message}
       </p>
       {actionLabel && actionHref ? (
@@ -339,7 +339,7 @@ export function EmptyState({
       {secondaryLabel && secondaryHref ? (
         <Link
           href={secondaryHref}
-          className="mt-5 text-sm font-medium text-[var(--hh-primary-action)] transition hover:text-[var(--hh-primary-action-hover)]"
+          className="mt-5 text-sm font-medium text-(--hh-primary-action) transition hover:text-(--hh-primary-action-hover)"
         >
           {secondaryLabel}
         </Link>
@@ -350,19 +350,19 @@ export function EmptyState({
 
 export function SkeletonCard() {
   return (
-    <div className="overflow-hidden rounded-[20px] border border-[var(--hh-border)] bg-[var(--hh-surface)] shadow-[var(--hh-shadow-sm)]">
-      <div className="h-[180px] animate-pulse bg-[linear-gradient(90deg,var(--hh-neutral-100),var(--hh-neutral-50),var(--hh-neutral-100))]" />
+    <div className="overflow-hidden rounded-2xl border border-(--hh-border) bg-(--hh-surface) shadow-(--hh-shadow-sm)">
+      <div className="h-45 animate-pulse bg-[linear-gradient(90deg,var(--hh-neutral-100),var(--hh-neutral-50),var(--hh-neutral-100))]" />
       <div className="space-y-3 p-5">
-        <div className="h-4 w-2/3 animate-pulse rounded-full bg-[var(--hh-neutral-100)]" />
-        <div className="h-3 w-1/3 animate-pulse rounded-full bg-[var(--hh-neutral-100)]" />
+        <div className="h-4 w-2/3 animate-pulse rounded-full bg-(--hh-neutral-100)" />
+        <div className="h-3 w-1/3 animate-pulse rounded-full bg-(--hh-neutral-100)" />
         <div className="flex gap-2">
-          <div className="h-6 w-14 animate-pulse rounded-full bg-[var(--hh-neutral-100)]" />
-          <div className="h-6 w-[72px] animate-pulse rounded-full bg-[var(--hh-neutral-100)]" />
-          <div className="h-6 w-12 animate-pulse rounded-full bg-[var(--hh-neutral-100)]" />
+          <div className="h-6 w-14 animate-pulse rounded-full bg-(--hh-neutral-100)" />
+          <div className="h-6 w-18 animate-pulse rounded-full bg-(--hh-neutral-100)" />
+          <div className="h-6 w-12 animate-pulse rounded-full bg-(--hh-neutral-100)" />
         </div>
         <div className="flex justify-between">
-          <div className="h-6 w-20 animate-pulse rounded-full bg-[var(--hh-neutral-100)]" />
-          <div className="h-10 w-24 animate-pulse rounded-[16px] bg-[var(--hh-neutral-100)]" />
+          <div className="h-6 w-20 animate-pulse rounded-full bg-(--hh-neutral-100)" />
+          <div className="h-10 w-24 animate-pulse rounded-2xl bg-(--hh-neutral-100)" />
         </div>
       </div>
     </div>
@@ -391,53 +391,53 @@ export function ConfirmationModal({
   footer,
 }: ConfirmationModalProps) {
   return (
-    <section className="relative mx-auto w-full max-w-[720px]">
-      <div className="absolute inset-0 rounded-[32px] bg-[var(--hh-overlay)] blur-3xl opacity-30" />
-      <div className="relative rounded-[32px] border border-[var(--hh-border)] bg-[var(--hh-surface)] p-8 shadow-[var(--hh-shadow-lg)]">
+    <section className="relative mx-auto w-full max-w-180">
+      <div className="absolute inset-0 rounded-8xl bg-(--hh-overlay) blur-3xl opacity-30" />
+      <div className="relative rounded-8xl border border-(--hh-border) bg-(--hh-surface) p-8 shadow-(--hh-shadow-lg)">
         <div className="flex items-start justify-between gap-4">
-          <h2 className="hh-display text-[40px] leading-[48px] text-[var(--hh-text)]">{title}</h2>
-          <div className="flex h-11 w-11 items-center justify-center rounded-[16px] border border-[var(--hh-border)] text-[var(--hh-text-muted)]">
+          <h2 className="hh-display text-10 leading-12 text-(--hh-text)">{title}</h2>
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-(--hh-border) text-(--hh-text-muted)">
             x
           </div>
         </div>
 
-        <div className="mt-8 rounded-[20px] bg-[var(--hh-surface-muted)] p-5">
+        <div className="mt-8 rounded-2xl bg-(--hh-surface-muted) p-5">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-[16px] bg-[linear-gradient(180deg,var(--hh-primary-400),var(--hh-primary-700))] text-xl">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[linear-gradient(180deg,var(--hh-primary-400),var(--hh-primary-700))] text-xl">
               HH
             </div>
             <div>
-              <h3 className="text-[24px] font-semibold text-[var(--hh-text)]">{headerTitle}</h3>
-              <p className="mt-1 text-sm text-[var(--hh-text-muted)]">{headerSubtitle}</p>
+              <h3 className="text-6 font-semibold text-(--hh-text)">{headerTitle}</h3>
+              <p className="mt-1 text-sm text-(--hh-text-muted)">{headerSubtitle}</p>
               {ratingLine ? (
-                <p className="mt-2 text-sm text-[var(--hh-accent-gold-600)]">{ratingLine}</p>
+                <p className="mt-2 text-sm text-(--hh-accent-gold-600)">{ratingLine}</p>
               ) : null}
             </div>
           </div>
         </div>
 
-        <div className="mt-8 space-y-4 border-y border-[var(--hh-border)] py-6">
+        <div className="mt-8 space-y-4 border-y border-(--hh-border) py-6">
           {rows.map((row) => (
             <div key={row.label} className="flex items-center justify-between gap-4">
-              <span className="text-sm text-[var(--hh-text-muted)]">{row.label}</span>
-              <span className="text-right text-sm font-medium text-[var(--hh-text)]">{row.value}</span>
+              <span className="text-sm text-(--hh-text-muted)">{row.label}</span>
+              <span className="text-right text-sm font-medium text-(--hh-text)">{row.value}</span>
             </div>
           ))}
         </div>
 
         <div className="mt-6 space-y-3">
           {pricing.map((entry) => (
-            <div key={entry.label} className="flex items-center justify-between gap-4 text-sm text-[var(--hh-text-muted)]">
+            <div key={entry.label} className="flex items-center justify-between gap-4 text-sm text-(--hh-text-muted)">
               <span>{entry.label}</span>
               <span>{entry.value}</span>
             </div>
           ))}
         </div>
 
-        <div className="mt-6 flex items-end justify-between gap-4 border-t border-[var(--hh-border)] pt-6">
+        <div className="mt-6 flex items-end justify-between gap-4 border-t border-(--hh-border) pt-6">
           <div>
-            <p className="text-sm text-[var(--hh-text-muted)]">Total</p>
-            <p className="text-[32px] font-semibold text-[var(--hh-primary-action)]">{total}</p>
+            <p className="text-sm text-(--hh-text-muted)">Total</p>
+            <p className="text-8 font-semibold text-(--hh-primary-action)">{total}</p>
           </div>
           <div className="flex items-center gap-3">{footer}</div>
         </div>
@@ -460,13 +460,13 @@ export function SectionHeader({
   return (
     <div className={cx("space-y-3", align === "center" && "text-center")}>
       {eyebrow ? (
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--hh-text-subtle)]">
+        <p className="text-xs font-semibold uppercase tracking-wider text-(--hh-text-subtle)">
           {eyebrow}
         </p>
       ) : null}
-      <h2 className="hh-display text-[40px] leading-[48px] text-[var(--hh-text)]">{title}</h2>
+      <h2 className="hh-display text-10 leading-12 text-(--hh-text)">{title}</h2>
       {subtitle ? (
-        <p className="max-w-2xl text-[16px] leading-[26px] text-[var(--hh-text-muted)]">
+        <p className="max-w-2xl text-base leading-6.5 text-(--hh-text-muted)">
           {subtitle}
         </p>
       ) : null}
@@ -477,7 +477,7 @@ export function SectionHeader({
 export function HeroPanel() {
   return (
     <SurfaceCard
-      className="relative overflow-hidden rounded-[32px] border-none bg-[linear-gradient(135deg,var(--hh-primary-700),var(--hh-primary-500)_56%,var(--hh-accent-gold-500)_140%)] px-8 py-10 text-[var(--hh-text-inverse)] shadow-[var(--hh-shadow-lg)] md:px-12 md:py-14"
+      className="relative overflow-hidden rounded-8xl border-none bg-[linear-gradient(135deg,var(--hh-primary-700),var(--hh-primary-500)_56%,var(--hh-accent-gold-500)_140%)] px-8 py-10 text-(--hh-text-inverse) shadow-(--hh-shadow-lg) md:px-12 md:py-14"
       variant="default"
     >
       <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.26),transparent_58%)]" />
@@ -488,10 +488,10 @@ export function HeroPanel() {
         <Badge tone="premium" className="bg-white/15 text-white">
           Design system aplicado ao fluxo de reservas
         </Badge>
-        <h1 className="hh-display mt-6 max-w-2xl text-[48px] leading-[56px] md:text-[56px] md:leading-[64px]">
+        <h1 className="hh-display mt-6 max-w-2xl text-12 leading-14 md:text-14 md:leading-16">
           Descubra destinos com uma experiencia editorial e reserve com clareza.
         </h1>
-        <p className="mt-5 max-w-2xl text-[18px] leading-[30px] text-white/82">
+        <p className="mt-5 max-w-2xl text-lg leading-7.5 text-white/82">
           HotelHub combina pesquisa rapida, feedback de disponibilidade e um checkout
           premium sem ruído visual.
         </p>
@@ -510,14 +510,14 @@ export function HeroPanel() {
 
 export function SearchStrip() {
   return (
-    <SurfaceCard className="rounded-[28px]" variant="default">
+    <SurfaceCard className="rounded-7xl" variant="default">
       <div className="flex flex-col gap-5">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--hh-text-subtle)]">
+            <p className="text-xs font-semibold uppercase tracking-wider text-(--hh-text-subtle)">
               Buscar estadia
             </p>
-            <h3 className="mt-2 text-[24px] font-semibold text-[var(--hh-text)]">
+            <h3 className="mt-2 text-6 font-semibold text-(--hh-text)">
               Selecione destino, periodo e ocupacao
             </h3>
           </div>
@@ -560,13 +560,13 @@ export function DestinationCard({ destination }: Readonly<{ destination: Destina
       </div>
       <div className="space-y-4 p-5">
         <div>
-          <h3 className="text-[24px] font-semibold text-[var(--hh-text)]">{destination.name}</h3>
-          <p className="mt-1 text-sm text-[var(--hh-text-muted)]">
+          <h3 className="text-6 font-semibold text-(--hh-text)">{destination.name}</h3>
+          <p className="mt-1 text-sm text-(--hh-text-muted)">
             {destination.city}, {destination.state}
           </p>
         </div>
         {destination.description ? (
-          <p className="text-[15px] leading-[24px] text-[var(--hh-text-muted)]">
+          <p className="text-sm leading-6 text-(--hh-text-muted)">
             {destination.description}
           </p>
         ) : null}
@@ -586,27 +586,27 @@ export function HotelCard({ hotel }: Readonly<{ hotel: Hotel }>) {
     <SurfaceCard className="space-y-4" variant="hotel">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-[24px] font-semibold text-[var(--hh-text)]">{hotel.name}</h3>
-          <p className="mt-1 text-sm text-[var(--hh-text-muted)]">{hotel.address}</p>
+          <h3 className="text-6 font-semibold text-(--hh-text)">{hotel.name}</h3>
+          <p className="mt-1 text-sm text-(--hh-text-muted)">{hotel.address}</p>
         </div>
         <Badge tone="success">{hotel.category}</Badge>
       </div>
 
       {hotel.description ? (
-        <p className="text-[15px] leading-[24px] text-[var(--hh-text-muted)]">{hotel.description}</p>
+        <p className="text-sm leading-6 text-(--hh-text-muted)">{hotel.description}</p>
       ) : null}
 
       {hotel.amenities.length > 0 ? (
         <div className="flex flex-wrap gap-2">
           {hotel.amenities.map((amenity) => (
-            <Badge key={amenity} tone="new" className="h-[38px] px-4 text-[13px]">
+            <Badge key={amenity} tone="new" className="h-9.5 px-4 text-xs">
               {amenity}
             </Badge>
           ))}
         </div>
       ) : null}
 
-      <div className="flex items-center justify-between gap-4 border-t border-[var(--hh-border)] pt-4">
+      <div className="flex items-center justify-between gap-4 border-t border-(--hh-border) pt-4">
         <Badge tone="popular">Popular</Badge>
         <Button href={`/hotels/${hotel.id}`} variant="primary">
           Ver hotel
@@ -644,19 +644,19 @@ export function RoomCard({
     <SurfaceCard className="space-y-5" variant="reservationSummary">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-[22px] font-semibold text-[var(--hh-text)]">{room.name}</h3>
-          <p className="mt-1 text-sm text-[var(--hh-text-muted)]">{room.type}</p>
+          <h3 className="text-5.5 font-semibold text-(--hh-text)">{room.name}</h3>
+          <p className="mt-1 text-sm text-(--hh-text-muted)">{room.type}</p>
         </div>
         <div className="text-right">
-          <p className="text-[28px] font-semibold text-[var(--hh-primary-action)]">
+          <p className="text-7 font-semibold text-(--hh-primary-action)">
             {formatCurrency(room.pricePerNight)}
           </p>
-          <p className="text-sm text-[var(--hh-text-muted)]">por noite</p>
+          <p className="text-sm text-(--hh-text-muted)">por noite</p>
         </div>
       </div>
 
       {room.description ? (
-        <p className="text-[15px] leading-[24px] text-[var(--hh-text-muted)]">{room.description}</p>
+        <p className="text-sm leading-6 text-(--hh-text-muted)">{room.description}</p>
       ) : null}
 
       <div className="flex flex-wrap gap-2">
@@ -669,7 +669,7 @@ export function RoomCard({
         ) : null}
       </div>
 
-      <div className="flex items-center justify-between gap-4 border-t border-[var(--hh-border)] pt-4">
+      <div className="flex items-center justify-between gap-4 border-t border-(--hh-border) pt-4">
         <Badge tone="premium">Melhor tarifa</Badge>
         {href ? (
           <Link href={href} className={buttonClassName("primary", "md")}>
@@ -694,13 +694,13 @@ export function MetricCard({
 }>) {
   return (
     <SurfaceCard variant="default">
-      <p className="text-sm text-[var(--hh-text-muted)]">{title}</p>
+      <p className="text-sm text-(--hh-text-muted)">{title}</p>
       <p
         className={cx(
-          "mt-4 text-[44px] font-semibold leading-none",
-          accent === "primary" && "text-[var(--hh-primary-action)]",
-          accent === "success" && "text-[var(--hh-success-action)]",
-          accent === "accent" && "text-[var(--hh-accent-highlight)]",
+          "mt-4 text-11 font-semibold leading-none",
+          accent === "primary" && "text-(--hh-primary-action)",
+          accent === "success" && "text-(--hh-success-action)",
+          accent === "accent" && "text-(--hh-accent-highlight)",
         )}
       >
         {value}

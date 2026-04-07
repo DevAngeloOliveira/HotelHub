@@ -32,12 +32,12 @@ export default async function HotelDetailPage({ params }: HotelDetailProps) {
               <Badge tone="premium" className="bg-white/15 text-white">
                 {hotel.category}
               </Badge>
-              <h1 className="hh-display text-[44px] leading-[50px] md:text-[52px] md:leading-[58px]">
+              <h1 className="hh-display text-[44px] leading-12.5 md:text-[52px] md:leading-14.5">
                 {hotel.name}
               </h1>
-              <p className="max-w-xl text-[16px] leading-[26px] text-white/78">{hotel.address}</p>
+              <p className="max-w-xl text-[16px] leading-6.5 text-white/78">{hotel.address}</p>
               {hotel.description ? (
-                <p className="max-w-2xl text-[16px] leading-[28px] text-white/84">{hotel.description}</p>
+                <p className="max-w-2xl text-[16px] leading-7 text-white/84">{hotel.description}</p>
               ) : null}
               <div className="flex flex-wrap gap-3">
                 <Button
@@ -48,21 +48,21 @@ export default async function HotelDetailPage({ params }: HotelDetailProps) {
                   Ver disponibilidade
                 </Button>
                 <Button href="/destinations" variant="ghost" size="lg" className="border-white/20 bg-white/10 text-white hover:bg-white/16">
-                  Voltar ao catalogo
+                  Voltar ao catálogo
                 </Button>
               </div>
             </div>
           </div>
 
-          <div className="space-y-6 bg-[var(--hh-surface-muted)] px-8 py-10 md:px-10 md:py-12">
+          <div className="space-y-6 bg-(--hh-surface-muted) px-8 py-10 md:px-10 md:py-12">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--hh-text-subtle)]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-(--hh-text-subtle)">
                 Amenidades
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {hotel.amenities.length > 0 ? (
                   hotel.amenities.map((amenity) => (
-                    <Badge key={amenity} tone="new" className="h-[38px] px-4 text-[13px]">
+                    <Badge key={amenity} tone="new" className="h-9.5 px-4 text-[13px]">
                       {amenity}
                     </Badge>
                   ))
@@ -72,11 +72,11 @@ export default async function HotelDetailPage({ params }: HotelDetailProps) {
               </div>
             </div>
 
-            <div className="grid gap-4 rounded-[24px] bg-white p-5 shadow-[var(--hh-shadow-sm)]">
+            <div className="grid gap-4 rounded-3xl bg-white p-5 shadow-(--hh-shadow-sm)">
               <div>
-                <p className="text-sm text-[var(--hh-text-subtle)]">Contato</p>
-                <p className="mt-2 text-[16px] font-medium text-[var(--hh-text)]">{hotel.contactPhone}</p>
-                <p className="text-[16px] text-[var(--hh-text-muted)]">{hotel.contactEmail}</p>
+                <p className="text-sm text-(--hh-text-subtle)">Contato</p>
+                <p className="mt-2 text-[16px] font-medium text-(--hh-text)">{hotel.contactPhone}</p>
+                <p className="text-[16px] text-(--hh-text-muted)">{hotel.contactEmail}</p>
               </div>
               <AlertBanner
                 tone="info"
@@ -90,9 +90,9 @@ export default async function HotelDetailPage({ params }: HotelDetailProps) {
 
       <section className="space-y-6">
         <SectionHeader
-          eyebrow="Inventario"
+          eyebrow="Inventário"
           title="Quartos deste hotel"
-          subtitle="Consulte as categorias disponiveis e avance para o filtro de datas quando quiser validar estoque real."
+          subtitle="Consulte as categorias disponíveis e avance para o filtro de datas quando quiser validar estoque real."
         />
 
         {hotel.rooms.length > 0 ? (
@@ -102,12 +102,12 @@ export default async function HotelDetailPage({ params }: HotelDetailProps) {
             ))}
           </div>
         ) : (
-          <SurfaceCard className="flex min-h-[220px] flex-col items-center justify-center gap-4 text-center">
-            <p className="hh-display text-[32px] leading-[38px] text-[var(--hh-text)]">Sem quartos ativos</p>
-            <p className="max-w-md text-[15px] leading-[24px] text-[var(--hh-text-muted)]">
-              O inventario deste hotel ainda nao foi publicado para consulta publica.
+          <SurfaceCard className="flex min-h-55 flex-col items-center justify-center gap-4 text-center">
+            <p className="hh-display text-[32px] leading-9.5 text-(--hh-text)">Sem quartos ativos</p>
+            <p className="max-w-md text-[15px] leading-6 text-(--hh-text-muted)">
+              O inventário deste hotel ainda não foi publicado para consulta pública.
             </p>
-            <Link href="/destinations" className="text-sm font-medium text-[var(--hh-primary-action)] hover:text-[var(--hh-primary-action-hover)]">
+            <Link href="/destinations" className="text-sm font-medium text-(--hh-primary-action) hover:text-(--hh-primary-action-hover)">
               Explorar outros destinos
             </Link>
           </SurfaceCard>

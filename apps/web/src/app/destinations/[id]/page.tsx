@@ -31,9 +31,9 @@ export default async function DestinationDetailPage({ params }: DestinationDetai
           <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-4 p-8 text-white">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/72">
-                Destination detail
+                Detalhes do destino
               </p>
-              <h1 className="hh-display mt-4 text-[52px] leading-[58px]">{destination.name}</h1>
+              <h1 className="hh-display mt-4 text-[52px] leading-14.5">{destination.name}</h1>
             </div>
             <Badge tone="premium" className="bg-white/16 text-white backdrop-blur">
               {destination.category}
@@ -43,22 +43,22 @@ export default async function DestinationDetailPage({ params }: DestinationDetai
 
         <div className="grid gap-6 p-8 md:grid-cols-[1.4fr_0.6fr]">
           <div>
-            <p className="text-[16px] leading-[26px] text-[var(--hh-text-muted)]">
+            <p className="text-[16px] leading-6.5 text-(--hh-text-muted)">
               {destination.description}
             </p>
           </div>
-          <div className="grid gap-3 rounded-[24px] bg-[var(--hh-surface-muted)] p-5">
+          <div className="grid gap-3 rounded-3xl bg-(--hh-surface-muted) p-5">
             <div>
-              <p className="text-sm text-[var(--hh-text-subtle)]">Cidade</p>
-              <p className="text-[18px] font-medium text-[var(--hh-text)]">{destination.city}</p>
+              <p className="text-sm text-(--hh-text-subtle)">Cidade</p>
+              <p className="text-[18px] font-medium text-(--hh-text)">{destination.city}</p>
             </div>
             <div>
-              <p className="text-sm text-[var(--hh-text-subtle)]">Estado</p>
-              <p className="text-[18px] font-medium text-[var(--hh-text)]">{destination.state}</p>
+              <p className="text-sm text-(--hh-text-subtle)">Estado</p>
+              <p className="text-[18px] font-medium text-(--hh-text)">{destination.state}</p>
             </div>
             <div>
-              <p className="text-sm text-[var(--hh-text-subtle)]">Pais</p>
-              <p className="text-[18px] font-medium text-[var(--hh-text)]">{destination.country}</p>
+              <p className="text-sm text-(--hh-text-subtle)">País</p>
+              <p className="text-[18px] font-medium text-(--hh-text)">{destination.country}</p>
             </div>
           </div>
         </div>
@@ -66,9 +66,9 @@ export default async function DestinationDetailPage({ params }: DestinationDetai
 
       <section className="space-y-6">
         <SectionHeader
-          eyebrow="Hoteis vinculados"
+          eyebrow="Hotéis vinculados"
           title="Escolha sua estadia"
-          subtitle="Todos os hoteis abaixo estao ativos e podem seguir para consulta de quartos e disponibilidade."
+          subtitle="Todos os hotéis abaixo estão ativos e podem seguir para consulta de quartos e disponibilidade."
         />
 
         {destination.hotels.length > 0 ? (
