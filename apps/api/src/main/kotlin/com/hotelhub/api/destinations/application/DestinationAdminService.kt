@@ -6,9 +6,12 @@ import com.hotelhub.api.destinations.infrastructure.persistence.mapper.toDomain
 import com.hotelhub.api.destinations.infrastructure.persistence.repository.DestinationJpaRepository
 import com.hotelhub.api.destinations.presentation.dto.CreateDestinationRequest
 import com.hotelhub.api.destinations.presentation.dto.UpdateDestinationRequest
+import com.hotelhub.api.shared.config.CacheNames
 import com.hotelhub.api.shared.domain.EntityStatus
 import com.hotelhub.api.shared.error.ConflictException
 import com.hotelhub.api.shared.error.ResourceNotFoundException
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Caching
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -18,6 +21,18 @@ class DestinationAdminService(
     private val destinationRepository: DestinationJpaRepository
 ) {
 
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheNames.DESTINATIONS_PUBLIC_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.DESTINATIONS_PUBLIC_BY_ID], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_ID], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_PAGE], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_ACTIVE_BY_HOTEL], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+        ]
+    )
     @Transactional
     fun create(request: CreateDestinationRequest): Destination {
         val slug = request.slug.trim().lowercase()
@@ -41,6 +56,18 @@ class DestinationAdminService(
         return destinationRepository.save(entity).toDomain()
     }
 
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheNames.DESTINATIONS_PUBLIC_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.DESTINATIONS_PUBLIC_BY_ID], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_ID], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_PAGE], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_ACTIVE_BY_HOTEL], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+        ]
+    )
     @Transactional
     fun update(destinationId: UUID, request: UpdateDestinationRequest): Destination {
         val entity = destinationRepository.findById(destinationId)
@@ -63,6 +90,18 @@ class DestinationAdminService(
         return destinationRepository.save(entity).toDomain()
     }
 
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheNames.DESTINATIONS_PUBLIC_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.DESTINATIONS_PUBLIC_BY_ID], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_ID], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_PAGE], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_ACTIVE_BY_HOTEL], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+        ]
+    )
     @Transactional
     fun updateStatus(destinationId: UUID, status: EntityStatus): Destination {
         val entity = destinationRepository.findById(destinationId)

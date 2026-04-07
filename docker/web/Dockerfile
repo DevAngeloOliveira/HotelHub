@@ -13,6 +13,8 @@ RUN npm install --legacy-peer-deps
 
 FROM deps AS builder
 WORKDIR /workspace
+ARG NEXT_PUBLIC_API_BASE_URL=/api/v1
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 
 COPY apps/web ./apps/web
 
@@ -24,6 +26,8 @@ WORKDIR /workspace
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+ARG NEXT_PUBLIC_API_BASE_URL=/api/v1
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 
 COPY --from=deps /workspace/package.json ./package.json
 COPY --from=deps /workspace/package-lock.json ./package-lock.json

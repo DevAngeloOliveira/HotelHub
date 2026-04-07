@@ -4,8 +4,10 @@ import com.hotelhub.api.reservations.infrastructure.persistence.repository.Reser
 import com.hotelhub.api.rooms.domain.Room
 import com.hotelhub.api.rooms.infrastructure.persistence.mapper.toDomain
 import com.hotelhub.api.rooms.infrastructure.persistence.repository.RoomJpaRepository
+import com.hotelhub.api.shared.config.CacheNames
 import com.hotelhub.api.shared.domain.EntityStatus
 import com.hotelhub.api.shared.error.BusinessRuleException
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -17,11 +19,16 @@ class RoomQueryService(
     private val reservationRepository: ReservationJpaRepository
 ) {
 
+    @Cacheable(cacheNames = [CacheNames.ROOMS_PUBLIC_ACTIVE_BY_HOTEL], key = "#hotelId")
     @Transactional(readOnly = true)
     fun listActiveByHotel(hotelId: UUID): List<Room> {
         return roomRepository.findAllByHotelIdAndStatus(hotelId, EntityStatus.ACTIVE).map { it.toDomain() }
     }
 
+    @Cacheable(
+        cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL],
+        key = "#hotelId + '|' + #checkInDate + '|' + #checkOutDate + '|' + #guestCount"
+    )
     @Transactional(readOnly = true)
     fun listByHotelWithAvailability(
         hotelId: UUID,

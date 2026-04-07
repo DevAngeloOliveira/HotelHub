@@ -10,12 +10,14 @@ import com.hotelhub.api.reservations.infrastructure.persistence.mapper.toDomain
 import com.hotelhub.api.reservations.infrastructure.persistence.repository.ReservationJpaRepository
 import com.hotelhub.api.reservations.presentation.dto.CreateReservationRequest
 import com.hotelhub.api.rooms.infrastructure.persistence.repository.RoomJpaRepository
+import com.hotelhub.api.shared.config.CacheNames
 import com.hotelhub.api.shared.domain.EntityStatus
 import com.hotelhub.api.shared.domain.ReservationStatus
 import com.hotelhub.api.shared.error.BusinessRuleException
 import com.hotelhub.api.shared.error.ConflictException
 import com.hotelhub.api.shared.error.ResourceNotFoundException
 import com.hotelhub.api.users.infrastructure.persistence.repository.UserJpaRepository
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -47,6 +49,7 @@ class ReservationService(
             .toDomain()
     }
 
+    @CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
     @Transactional
     fun create(userId: UUID, request: CreateReservationRequest): Reservation {
         validateReservationDates(request.checkInDate, request.checkOutDate)
@@ -125,6 +128,7 @@ class ReservationService(
         return reservation
     }
 
+    @CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
     @Transactional
     fun cancel(userId: UUID, reservationId: UUID): Reservation {
         val reservation = reservationRepository.findByIdAndUserId(reservationId, userId)

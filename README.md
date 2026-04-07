@@ -29,6 +29,7 @@ docker/
   api/
   web/
   mobile/
+  nginx/
 ```
 
 ## Prerequisites
@@ -87,7 +88,7 @@ npm run docker:build:mobile-builder
 npm run docker:build:all
 ```
 
-## Docker (DB + API + Web)
+## Docker (DB + Redis + API + Web + Nginx)
 
 ```bash
 npm run docker:up
@@ -95,9 +96,12 @@ npm run docker:up
 
 Services:
 
-- Web: `http://localhost:3000`
-- API: `http://localhost:8080/api/v1`
+- Nginx (entrypoint): `http://localhost`
+- Web (via Nginx): `http://localhost`
+- API (via Nginx): `http://localhost/api/v1`
+- Swagger (via Nginx): `http://localhost/api/v1/swagger-ui.html`
 - PostgreSQL: `localhost:5432`
+- Redis: `localhost:6379`
 
 Mobile no Docker compose e tratado como **builder environment** (`mobile-builder`), nao como runtime service.
 Para build local do builder:

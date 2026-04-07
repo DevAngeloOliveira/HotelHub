@@ -4,8 +4,10 @@ import com.hotelhub.api.destinations.infrastructure.persistence.repository.Desti
 import com.hotelhub.api.hotels.domain.Hotel
 import com.hotelhub.api.hotels.infrastructure.persistence.mapper.toDomain
 import com.hotelhub.api.hotels.infrastructure.persistence.repository.HotelJpaRepository
+import com.hotelhub.api.shared.config.CacheNames
 import com.hotelhub.api.shared.domain.EntityStatus
 import com.hotelhub.api.shared.error.ResourceNotFoundException
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -18,6 +20,10 @@ class HotelPublicService(
     private val destinationRepository: DestinationJpaRepository
 ) {
 
+    @Cacheable(
+        cacheNames = [CacheNames.HOTELS_PUBLIC_LIST],
+        key = "#destinationId + '|' + #pageable.pageNumber + '|' + #pageable.pageSize + '|' + #pageable.sort.toString()"
+    )
     @Transactional(readOnly = true)
     fun list(destinationId: UUID?, pageable: Pageable): Page<Hotel> {
         val page = if (destinationId == null) {
@@ -37,6 +43,10 @@ class HotelPublicService(
         return page.map { it.toDomain() }
     }
 
+    @Cacheable(
+        cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_PAGE],
+        key = "#destinationId + '|' + #pageable.pageNumber + '|' + #pageable.pageSize + '|' + #pageable.sort.toString()"
+    )
     @Transactional(readOnly = true)
     fun pageByDestination(destinationId: UUID, pageable: Pageable): Page<Hotel> {
         return hotelRepository.findPublicByDestination(
@@ -47,6 +57,7 @@ class HotelPublicService(
         ).map { it.toDomain() }
     }
 
+    @Cacheable(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_LIST], key = "#destinationId")
     @Transactional(readOnly = true)
     fun listByDestination(destinationId: UUID): List<Hotel> {
         return hotelRepository.findPublicByDestination(
@@ -56,6 +67,7 @@ class HotelPublicService(
         ).map { it.toDomain() }
     }
 
+    @Cacheable(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_ID], key = "#hotelId")
     @Transactional(readOnly = true)
     fun getActiveById(hotelId: UUID): Hotel {
         val hotel = hotelRepository.findByIdAndStatus(hotelId, EntityStatus.ACTIVE)

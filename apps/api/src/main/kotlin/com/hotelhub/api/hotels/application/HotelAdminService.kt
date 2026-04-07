@@ -8,9 +8,12 @@ import com.hotelhub.api.hotels.infrastructure.persistence.mapper.toDomain
 import com.hotelhub.api.hotels.infrastructure.persistence.repository.HotelJpaRepository
 import com.hotelhub.api.hotels.presentation.dto.CreateHotelRequest
 import com.hotelhub.api.hotels.presentation.dto.UpdateHotelRequest
+import com.hotelhub.api.shared.config.CacheNames
 import com.hotelhub.api.shared.domain.EntityStatus
 import com.hotelhub.api.shared.error.BusinessRuleException
 import com.hotelhub.api.shared.error.ResourceNotFoundException
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Caching
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -21,6 +24,16 @@ class HotelAdminService(
     private val destinationRepository: DestinationJpaRepository
 ) {
 
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_ID], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_PAGE], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_ACTIVE_BY_HOTEL], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+        ]
+    )
     @Transactional
     fun create(request: CreateHotelRequest): Hotel {
         if (!destinationRepository.existsById(request.destinationId)) {
@@ -42,6 +55,16 @@ class HotelAdminService(
         return hotelRepository.save(entity).toDomain()
     }
 
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_ID], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_PAGE], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_ACTIVE_BY_HOTEL], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+        ]
+    )
     @Transactional
     fun update(hotelId: UUID, request: UpdateHotelRequest): Hotel {
         if (!destinationRepository.existsById(request.destinationId)) {
@@ -63,6 +86,16 @@ class HotelAdminService(
         return hotelRepository.save(entity).toDomain()
     }
 
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_ID], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_PAGE], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.HOTELS_PUBLIC_BY_DESTINATION_LIST], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_ACTIVE_BY_HOTEL], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+        ]
+    )
     @Transactional
     fun updateStatus(hotelId: UUID, status: EntityStatus): Hotel {
         val entity = hotelRepository.findById(hotelId)

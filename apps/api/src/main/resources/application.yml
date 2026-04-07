@@ -15,6 +15,16 @@ spring:
           time_zone: UTC
   flyway:
     enabled: true
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+      time-to-live: ${CACHE_TTL:300s}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: ${REDIS_TIMEOUT:2s}
   jackson:
     time-zone: UTC
     serialization:

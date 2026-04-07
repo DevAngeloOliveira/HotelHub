@@ -1,7 +1,7 @@
-import { DestinationCard, EmptyState, SectionHeader } from "@/components/ui";
-import { destinations } from "@/lib/mock-data";
+import { Button, DestinationCard, EmptyState, SectionHeader, SurfaceCard, TextField } from "@/components/ui";
+import { listDestinations } from "@/lib/api";
 
-type DestinationsPageProps = {
+type DestinationsPageProps = Readonly<{
   searchParams?: Promise<{
     name?: string;
     city?: string;
@@ -9,98 +9,71 @@ type DestinationsPageProps = {
     country?: string;
     category?: string;
   }>;
-};
-
-function normalize(value?: string): string {
-  return (value ?? "").trim().toLowerCase();
-}
+}>;
 
 export default async function DestinationsPage({ searchParams }: DestinationsPageProps) {
-  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const sp = searchParams ? await searchParams : undefined;
 
-  const name = normalize(resolvedSearchParams?.name);
-  const city = normalize(resolvedSearchParams?.city);
-  const state = normalize(resolvedSearchParams?.state);
-  const country = normalize(resolvedSearchParams?.country);
-  const category = normalize(resolvedSearchParams?.category);
+  let destinations: Awaited<ReturnType<typeof listDestinations>>["content"] = [];
+  let totalElements = 0;
 
-  const filtered = destinations.filter((destination) => {
-    if (name && !destination.name.toLowerCase().includes(name)) {
-      return false;
-    }
-    if (city && !destination.city.toLowerCase().includes(city)) {
-      return false;
-    }
-    if (state && !destination.state.toLowerCase().includes(state)) {
-      return false;
-    }
-    if (country && !destination.country.toLowerCase().includes(country)) {
-      return false;
-    }
-    if (category && !destination.category.toLowerCase().includes(category)) {
-      return false;
-    }
-    return true;
-  });
+  try {
+    const result = await listDestinations({
+      name: sp?.name?.trim() || undefined,
+      city: sp?.city?.trim() || undefined,
+      state: sp?.state?.trim() || undefined,
+      country: sp?.country?.trim() || undefined,
+      category: sp?.category?.trim() || undefined,
+      size: 24,
+    });
+    destinations = result.content;
+    totalElements = result.totalElements;
+  } catch {
+    // API unavailable
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <SectionHeader
-        title="WEB/DestinationsList"
-        subtitle="Grid paginado de destinos com filtros por nome, cidade, estado, pais e categoria."
+        eyebrow="Pesquisa"
+        title="Encontre o destino certo"
+        subtitle={`${totalElements} destino${totalElements === 1 ? "" : "s"} encontrado${totalElements === 1 ? "" : "s"} com os filtros atuais.`}
       />
 
-      <form className="hh-card grid gap-3 p-4 md:grid-cols-5">
-        <input
-          name="name"
-          defaultValue={resolvedSearchParams?.name}
-          placeholder="Nome"
-          className="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--hh-blue)] focus:ring-2 focus:ring-[var(--hh-blue)]/20"
-        />
-        <input
-          name="city"
-          defaultValue={resolvedSearchParams?.city}
-          placeholder="Cidade"
-          className="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--hh-blue)] focus:ring-2 focus:ring-[var(--hh-blue)]/20"
-        />
-        <input
-          name="state"
-          defaultValue={resolvedSearchParams?.state}
-          placeholder="Estado"
-          className="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--hh-blue)] focus:ring-2 focus:ring-[var(--hh-blue)]/20"
-        />
-        <input
-          name="country"
-          defaultValue={resolvedSearchParams?.country}
-          placeholder="Pais"
-          className="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--hh-blue)] focus:ring-2 focus:ring-[var(--hh-blue)]/20"
-        />
-        <div className="flex gap-2">
-          <input
-            name="category"
-            defaultValue={resolvedSearchParams?.category}
-            placeholder="Categoria"
-            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--hh-blue)] focus:ring-2 focus:ring-[var(--hh-blue)]/20"
-          />
-          <button
-            type="submit"
-            className="rounded-xl bg-[var(--hh-blue)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--hh-blue-700)]"
-          >
-            Filtrar
-          </button>
-        </div>
-      </form>
+      <SurfaceCard className="rounded-[28px]">
+        <form className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+          <TextField name="name" label="Nome" defaultValue={sp?.name} placeholder="Buscar por nome" />
+          <TextField name="city" label="Cidade" defaultValue={sp?.city} placeholder="Buscar por cidade" />
+          <TextField name="state" label="Estado" defaultValue={sp?.state} placeholder="UF" />
+          <TextField name="country" label="Pais" defaultValue={sp?.country} placeholder="Brasil" />
+          <div className="flex flex-col gap-3">
+            <TextField
+              name="category"
+              label="Categoria"
+              defaultValue={sp?.category}
+              placeholder="Praia, Serra..."
+            />
+            <Button type="submit" variant="primary" className="w-full">
+              Filtrar catalogo
+            </Button>
+          </div>
+        </form>
+      </SurfaceCard>
 
-      {filtered.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((destination) => (
+      {destinations.length > 0 ? (
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {destinations.map((destination) => (
             <DestinationCard key={destination.id} destination={destination} />
           ))}
         </div>
       ) : (
         <EmptyState
-          title="Nenhum destino encontrado"
-          message="Ajuste os filtros para buscar outros destinos disponiveis."
+          title="No results found"
+          message="Nao encontramos destinos compativeis com a combinacao atual. Ajuste cidade, pais ou categoria."
+          actionLabel="Clear all filters"
+          actionHref="/destinations"
+          secondaryLabel="Browse all destinations ->"
+          secondaryHref="/destinations"
         />
       )}
     </div>

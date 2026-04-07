@@ -1,87 +1,102 @@
 import { notFound } from "next/navigation";
-import { EmptyState, RoomCard, SectionHeader } from "@/components/ui";
+import { AlertBanner, Button, DateRangeField, EmptyState, RoomCard, SectionHeader, SurfaceCard } from "@/components/ui";
 import { addDays, toIsoDate } from "@/lib/date-utils";
-import { getAvailableRoomsByHotel, getHotelById } from "@/lib/mock-data";
+import { ApiError, getHotel, getHotelAvailability } from "@/lib/api";
 
-type AvailabilityPageProps = {
+type AvailabilityPageProps = Readonly<{
   params: Promise<{ id: string }>;
   searchParams?: Promise<{
     checkInDate?: string;
     checkOutDate?: string;
     guestCount?: string;
   }>;
-};
+}>;
 
-export default async function HotelAvailabilityPage({
-  params,
-  searchParams,
-}: AvailabilityPageProps) {
+export default async function HotelAvailabilityPage({ params, searchParams }: AvailabilityPageProps) {
   const { id } = await params;
-  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const sp = searchParams ? await searchParams : undefined;
 
-  const hotel = getHotelById(id);
-  if (!hotel) {
-    notFound();
+  let hotel: Awaited<ReturnType<typeof getHotel>>;
+  try {
+    hotel = await getHotel(id);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) notFound();
+    throw error;
   }
 
   const today = new Date();
-  const checkInDate = resolvedSearchParams?.checkInDate ?? toIsoDate(addDays(today, 7));
-  const checkOutDate = resolvedSearchParams?.checkOutDate ?? toIsoDate(addDays(today, 10));
-  const guestCount = Number(resolvedSearchParams?.guestCount ?? "2");
-  const rooms = getAvailableRoomsByHotel(hotel.id, checkInDate, checkOutDate, guestCount);
+  const checkInDate = sp?.checkInDate ?? toIsoDate(addDays(today, 7));
+  const checkOutDate = sp?.checkOutDate ?? toIsoDate(addDays(today, 10));
+  const guestCount = Number(sp?.guestCount ?? "2");
+
+  let rooms: Awaited<ReturnType<typeof getHotelAvailability>> = [];
+  try {
+    rooms = await getHotelAvailability(id, { checkInDate, checkOutDate, guestCount });
+  } catch {
+    rooms = [];
+  }
 
   return (
-    <div className="space-y-6">
-      <SectionHeader
-        title="WEB/RoomAvailability"
-        subtitle={`${hotel.name} - periodo ${checkInDate} ate ${checkOutDate} - ${guestCount} hospedes`}
-      />
+    <div className="space-y-8">
+      <SurfaceCard className="rounded-[28px]" variant="reservationSummary">
+        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div className="space-y-4">
+            <SectionHeader
+              eyebrow="Disponibilidade"
+              title={hotel.name}
+              subtitle="Selecione o periodo e a ocupacao. O retorno desta tela ja considera quantidade disponivel por tipo de quarto."
+            />
+            <AlertBanner
+              tone="warning"
+              title="Regra de estoque"
+              message="Apenas quartos reservaveis no periodo informado sao exibidos. Reservas confirmadas sobrepostas reduzem o saldo disponivel."
+            />
+          </div>
 
-      <form className="hh-card grid gap-3 p-4 md:grid-cols-4">
-        <input
-          type="date"
-          name="checkInDate"
-          defaultValue={checkInDate}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--hh-blue)] focus:ring-2 focus:ring-[var(--hh-blue)]/20"
-        />
-        <input
-          type="date"
-          name="checkOutDate"
-          defaultValue={checkOutDate}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--hh-blue)] focus:ring-2 focus:ring-[var(--hh-blue)]/20"
-        />
-        <input
-          type="number"
-          min={1}
-          name="guestCount"
-          defaultValue={guestCount}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--hh-blue)] focus:ring-2 focus:ring-[var(--hh-blue)]/20"
-        />
-        <button
-          type="submit"
-          className="rounded-xl bg-[var(--hh-green)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--hh-green-700)]"
-        >
-          Atualizar
-        </button>
-      </form>
+          <form className="grid gap-4 rounded-[24px] bg-[var(--hh-surface)] p-5 shadow-[var(--hh-shadow-sm)]">
+            <DateRangeField
+              className="md:grid-cols-1"
+              checkInDefaultValue={checkInDate}
+              checkOutDefaultValue={checkOutDate}
+              guestCountDefaultValue={guestCount}
+            />
+            <Button type="submit" variant="primary" size="lg" className="w-full">
+              Atualizar consulta
+            </Button>
+          </form>
+        </div>
+      </SurfaceCard>
 
       {rooms.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2">
-          {rooms.map((room) => (
-            <RoomCard
-              key={room.id}
-              room={room}
-              availableUnits={room.availableUnits}
-              checkInDate={checkInDate}
-              checkOutDate={checkOutDate}
-              guestCount={guestCount}
-            />
-          ))}
-        </div>
+        <section className="space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-[var(--hh-text-muted)]">
+              {rooms.length} categoria{rooms.length === 1 ? "" : "s"} encontrada{rooms.length === 1 ? "" : "s"} para {guestCount} hospede{guestCount === 1 ? "" : "s"}.
+            </p>
+            <Button href={`/hotels/${hotel.id}`} variant="secondary">
+              Ver detalhes do hotel
+            </Button>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2">
+            {rooms.map((room) => (
+              <RoomCard
+                key={room.id}
+                room={room}
+                checkInDate={checkInDate}
+                checkOutDate={checkOutDate}
+                guestCount={guestCount}
+              />
+            ))}
+          </div>
+        </section>
       ) : (
         <EmptyState
-          title="Sem quartos disponiveis no periodo"
-          message="Tente ajustar datas ou quantidade de hospedes."
+          title="Nenhum quarto disponivel"
+          message="Tente um periodo diferente ou reduza a ocupacao para encontrar novas opcoes."
+          actionLabel="Ajustar filtros"
+          actionHref={`/hotels/${hotel.id}/availability?checkInDate=${toIsoDate(addDays(today, 14))}&checkOutDate=${toIsoDate(addDays(today, 17))}&guestCount=2`}
+          secondaryLabel="Voltar para o hotel"
+          secondaryHref={`/hotels/${hotel.id}`}
         />
       )}
     </div>

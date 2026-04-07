@@ -1,6 +1,7 @@
 package com.hotelhub.api.hotels.domain
 
 import com.hotelhub.api.shared.domain.EntityStatus
+import java.io.Serializable
 import java.time.Instant
 import java.util.UUID
 
@@ -17,4 +18,4 @@ data class Hotel(
     val status: EntityStatus,
     val createdAt: Instant,
     val updatedAt: Instant
-)
+) : Serializable

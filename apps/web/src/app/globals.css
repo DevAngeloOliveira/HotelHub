@@ -1,21 +1,7 @@
 @import "tailwindcss";
 
-:root {
-  --hh-blue: #0b5fff;
-  --hh-blue-700: #083ea8;
-  --hh-green: #16a34a;
-  --hh-green-700: #0f7a38;
-  --hh-danger: #dc2626;
-  --hh-neutral-900: #0f172a;
-  --hh-neutral-700: #334155;
-  --hh-neutral-300: #cbd5e1;
-  --hh-neutral-200: #e2e8f0;
-  --hh-neutral-100: #f1f5f9;
-  --hh-white: #ffffff;
-}
-
 @theme inline {
-  --font-sans: var(--font-inter);
+  --font-sans: var(--hh-font-ui);
 }
 
 * {
@@ -29,11 +15,11 @@ body {
 }
 
 body {
-  color: var(--hh-neutral-900);
+  color: var(--hh-text);
   background:
-    radial-gradient(circle at 0% 0%, #dbe9ff 0%, transparent 40%),
-    radial-gradient(circle at 100% 0%, #d8f5e3 0%, transparent 35%),
-    var(--hh-neutral-100);
+    radial-gradient(circle at top left, rgba(76, 117, 255, 0.15) 0%, transparent 28%),
+    radial-gradient(circle at top right, rgba(216, 163, 23, 0.12) 0%, transparent 24%),
+    linear-gradient(180deg, var(--hh-background-accent) 0%, var(--hh-background) 38%, #ffffff 100%);
 }
 
 a {
@@ -41,18 +27,45 @@ a {
   text-decoration: none;
 }
 
-.hh-card {
-  background: var(--hh-white);
-  border: 1px solid var(--hh-neutral-200);
-  border-radius: 1rem;
-  box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
-.hh-chip {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.25rem 0.65rem;
+.hh-display {
+  font-family: var(--hh-font-display);
+}
+
+.hh-surface {
+  border: 1px solid var(--hh-border);
+  background: color-mix(in srgb, var(--hh-surface) 92%, transparent);
+  box-shadow: var(--hh-shadow-sm);
+  backdrop-filter: blur(14px);
+}
+
+.hh-page-grid {
+  position: relative;
+}
+
+.hh-page-grid::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.18), transparent 42%);
+}
+
+.hh-scroll-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.hh-scroll-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

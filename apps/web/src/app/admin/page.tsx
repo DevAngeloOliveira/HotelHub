@@ -1,72 +1,121 @@
-import { SectionHeader } from "@/components/ui";
-import { destinations, hotels, myReservations, rooms } from "@/lib/mock-data";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { AlertBanner, Badge, Button, MetricCard, SectionHeader, SurfaceCard } from "@/components/ui";
+import { getMe, listAdminReservations, listAdminUsers, listDestinations, listHotels } from "@/lib/api";
+import { getAuthToken } from "@/lib/auth";
 
-const adminCards = [
-  { title: "Destinos", value: destinations.length, accent: "blue" },
-  { title: "Hotéis", value: hotels.length, accent: "green" },
-  { title: "Quartos", value: rooms.length, accent: "blue" },
-  {
-    title: "Reservas Ativas",
-    value: myReservations.filter((item) => item.status === "CONFIRMED").length,
-    accent: "green",
-  },
-];
+export default async function AdminDashboardPage() {
+  const token = await getAuthToken();
+  if (!token) redirect("/login");
 
-export default function AdminDashboardPage() {
+  let user: Awaited<ReturnType<typeof getMe>> | undefined;
+  try {
+    user = await getMe(token);
+  } catch {
+    redirect("/login");
+  }
+
+  if (user?.role !== "ADMIN") {
+    return (
+      <SurfaceCard className="mx-auto flex max-w-[680px] flex-col items-center gap-4 p-10 text-center" variant="default">
+        <Badge tone="error">Acesso restrito</Badge>
+        <h2 className="hh-display text-[36px] leading-[42px] text-[var(--hh-text)]">Area administrativa bloqueada</h2>
+        <p className="max-w-xl text-[15px] leading-[24px] text-[var(--hh-text-muted)]">
+          Apenas perfis ADMIN podem consultar operacoes, estoque e acesso rapido aos endpoints internos.
+        </p>
+        <Button href="/" variant="primary">Voltar para a home</Button>
+      </SurfaceCard>
+    );
+  }
+
+  const [destinationsResult, hotelsResult, reservationsResult, usersResult] = await Promise.allSettled([
+    listDestinations({ size: 1 }),
+    listHotels({ size: 1 }),
+    listAdminReservations(token, { size: 1 }),
+    listAdminUsers(token, { size: 1 }),
+  ]);
+
+  const totalDestinations = destinationsResult.status === "fulfilled" ? destinationsResult.value.totalElements : 0;
+  const totalHotels = hotelsResult.status === "fulfilled" ? hotelsResult.value.totalElements : 0;
+  const totalReservations = reservationsResult.status === "fulfilled" ? reservationsResult.value.totalElements : 0;
+  const totalUsers = usersResult.status === "fulfilled" ? usersResult.value.totalElements : 0;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <SectionHeader
-        title="WEB/AdminDashboard"
-        subtitle="Visão operacional para gestão de destinos, hotéis, quartos, reservas e usuários."
+        eyebrow="Ops center"
+        title="Admin dashboard"
+        subtitle="Painel inicial para operacao do catalogo, reservas e usuarios. Os CRUDs continuam expostos pela API documentada e o front fica pronto para crescer sobre estes contratos."
       />
 
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {adminCards.map((card) => (
-          <article key={card.title} className="hh-card p-5">
-            <p className="text-sm text-slate-500">{card.title}</p>
-            <p
-              className={[
-                "mt-2 text-3xl font-extrabold",
-                card.accent === "blue" ? "text-[var(--hh-blue)]" : "text-[var(--hh-green)]",
-              ].join(" ")}
-            >
-              {card.value}
-            </p>
-          </article>
-        ))}
+      <AlertBanner
+        tone="info"
+        title="Escopo atual"
+        message="Esta entrega cobre a camada visual do dashboard, navegacao e links operacionais. Os CRUDs administrativos permanecem consumiveis pela API REST ja documentada."
+      />
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <MetricCard title="Destinos" value={totalDestinations} accent="primary" />
+        <MetricCard title="Hoteis" value={totalHotels} accent="accent" />
+        <MetricCard title="Reservas" value={totalReservations} accent="success" />
+        <MetricCard title="Usuarios" value={totalUsers} accent="primary" />
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-3">
-        <article className="hh-card p-5">
-          <h3 className="text-lg font-semibold text-slate-900">CRUD Destinos</h3>
-          <p className="mt-2 text-sm text-slate-600">
-            Criar, editar e inativar destinos do catálogo público.
-          </p>
-          <button className="mt-4 rounded-lg bg-[var(--hh-blue)] px-3 py-2 text-xs font-semibold text-white">
-            Gerenciar destinos
-          </button>
-        </article>
-
-        <article className="hh-card p-5">
-          <h3 className="text-lg font-semibold text-slate-900">CRUD Hotéis e Quartos</h3>
-          <p className="mt-2 text-sm text-slate-600">
-            Operações de catálogo, preço e capacidade por unidade.
-          </p>
-          <button className="mt-4 rounded-lg bg-[var(--hh-green)] px-3 py-2 text-xs font-semibold text-white">
-            Gerenciar hotéis/quartos
-          </button>
-        </article>
-
-        <article className="hh-card p-5">
-          <h3 className="text-lg font-semibold text-slate-900">Reservas e Usuários</h3>
-          <p className="mt-2 text-sm text-slate-600">
-            Acompanhar reservas por status e consultar usuários cadastrados.
-          </p>
-          <button className="mt-4 rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700">
-            Abrir gestão
-          </button>
-        </article>
+      <section className="grid gap-5 xl:grid-cols-3">
+        <AdminActionCard
+          title="Destinations"
+          description="Criacao, atualizacao e inativacao de destinos do catalogo publico."
+          href="/api/v1/swagger-ui.html#/admin-destination-controller"
+          cta="Abrir endpoints"
+          tone="primary"
+        />
+        <AdminActionCard
+          title="Hotels and rooms"
+          description="Catalogo, capacidade e status operacional de hoteis e quartos."
+          href="/api/v1/swagger-ui.html#/admin-hotel-controller"
+          cta="Abrir endpoints"
+          tone="accentGold"
+        />
+        <AdminActionCard
+          title="Reservations and users"
+          description="Consulta global de reservas, ownership e usuarios cadastrados."
+          href="/api/v1/swagger-ui.html#/admin-reservation-controller"
+          cta="Abrir swagger"
+          tone="secondary"
+        />
       </section>
     </div>
+  );
+}
+
+function AdminActionCard({
+  title,
+  description,
+  href,
+  cta,
+  tone,
+}: Readonly<{
+  title: string;
+  description: string;
+  href: string;
+  cta: string;
+  tone: "primary" | "secondary" | "accentGold";
+}>) {
+  return (
+    <SurfaceCard className="space-y-5" variant="default">
+      <div className="space-y-3">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--hh-text-subtle)]">Modulo</p>
+        <h3 className="text-[24px] font-semibold text-[var(--hh-text)]">{title}</h3>
+        <p className="text-[15px] leading-[24px] text-[var(--hh-text-muted)]">{description}</p>
+      </div>
+      <div className="flex items-center justify-between gap-4 border-t border-[var(--hh-border)] pt-4">
+        <Link href={href} target="_blank" rel="noreferrer" className="text-sm font-medium text-[var(--hh-primary-action)] hover:text-[var(--hh-primary-action-hover)]">
+          Swagger
+        </Link>
+        <Button href={href} variant={tone}>
+          {cta}
+        </Button>
+      </div>
+    </SurfaceCard>
   );
 }

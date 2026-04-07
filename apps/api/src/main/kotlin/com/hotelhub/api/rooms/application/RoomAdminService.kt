@@ -7,8 +7,11 @@ import com.hotelhub.api.rooms.infrastructure.persistence.mapper.toDomain
 import com.hotelhub.api.rooms.infrastructure.persistence.repository.RoomJpaRepository
 import com.hotelhub.api.rooms.presentation.dto.CreateRoomRequest
 import com.hotelhub.api.rooms.presentation.dto.UpdateRoomRequest
+import com.hotelhub.api.shared.config.CacheNames
 import com.hotelhub.api.shared.domain.EntityStatus
 import com.hotelhub.api.shared.error.ResourceNotFoundException
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Caching
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -19,6 +22,12 @@ class RoomAdminService(
     private val hotelRepository: HotelJpaRepository
 ) {
 
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_ACTIVE_BY_HOTEL], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+        ]
+    )
     @Transactional
     fun create(request: CreateRoomRequest): Room {
         if (!hotelRepository.existsById(request.hotelId)) {
@@ -38,6 +47,12 @@ class RoomAdminService(
         return roomRepository.save(entity).toDomain()
     }
 
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_ACTIVE_BY_HOTEL], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+        ]
+    )
     @Transactional
     fun update(roomId: UUID, request: UpdateRoomRequest): Room {
         if (!hotelRepository.existsById(request.hotelId)) {
@@ -57,6 +72,12 @@ class RoomAdminService(
         return roomRepository.save(entity).toDomain()
     }
 
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_ACTIVE_BY_HOTEL], allEntries = true),
+            CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+        ]
+    )
     @Transactional
     fun updateStatus(roomId: UUID, status: EntityStatus): Room {
         val entity = roomRepository.findById(roomId)

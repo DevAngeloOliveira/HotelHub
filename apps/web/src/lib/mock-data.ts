@@ -12,6 +12,7 @@ const today = new Date();
 export const destinations: Destination[] = [
   {
     id: "porto-seguro",
+    slug: "porto-seguro",
     name: "Porto Seguro",
     city: "Porto Seguro",
     state: "BA",
@@ -25,6 +26,7 @@ export const destinations: Destination[] = [
   },
   {
     id: "gramado",
+    slug: "gramado",
     name: "Gramado",
     city: "Gramado",
     state: "RS",
@@ -38,6 +40,7 @@ export const destinations: Destination[] = [
   },
   {
     id: "bonito",
+    slug: "bonito",
     name: "Bonito",
     city: "Bonito",
     state: "MS",
@@ -185,6 +188,7 @@ export const roomBookingWindows: RoomBookingWindow[] = [
 export const myReservations: Reservation[] = [
   {
     id: "RSV-1001",
+    userId: "mock-user",
     hotelId: "hotel-atlantico",
     roomId: "suite-mar",
     destinationId: "porto-seguro",
@@ -193,9 +197,12 @@ export const myReservations: Reservation[] = [
     guestCount: 2,
     totalAmount: 1680,
     status: "CONFIRMED",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
     id: "RSV-0998",
+    userId: "mock-user",
     hotelId: "serra-bella-hotel",
     roomId: "suite-serra",
     destinationId: "gramado",
@@ -204,6 +211,8 @@ export const myReservations: Reservation[] = [
     guestCount: 2,
     totalAmount: 2040,
     status: "CANCELLED",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
 ];
 
