@@ -19,7 +19,7 @@ export class ApiError extends Error {
 }
 
 function getBase(): string {
-  if (typeof window === "undefined") {
+  if (globalThis.window === undefined) {
     return process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1";
   }
   return process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1";
@@ -33,7 +33,7 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
     signal: options?.signal ? AbortSignal.any([options.signal, timeoutSignal]) : timeoutSignal,
     headers: {
       "Content-Type": "application/json",
-      ...(options?.headers ?? {}),
+      ...(options?.headers ?? undefined),
     },
   });
 
@@ -81,7 +81,8 @@ export async function listDestinations(
   if (filters?.page !== undefined) qs.set("page", String(filters.page));
   if (filters?.size !== undefined) qs.set("size", String(filters.size));
   const q = qs.toString();
-  return apiFetch<PageResponse<Destination>>(`/destinations${q ? `?${q}` : ""}`, {
+  const path = q ? `/destinations?${q}` : "/destinations";
+  return apiFetch<PageResponse<Destination>>(path, {
     next: { revalidate: 60 },
   });
 }
@@ -104,7 +105,8 @@ export async function listHotels(params?: {
   if (params?.page !== undefined) qs.set("page", String(params.page));
   if (params?.size !== undefined) qs.set("size", String(params.size));
   const q = qs.toString();
-  return apiFetch<PageResponse<Hotel>>(`/hotels${q ? `?${q}` : ""}`, {
+  const path = q ? `/hotels?${q}` : "/hotels";
+  return apiFetch<PageResponse<Hotel>>(path, {
     next: { revalidate: 60 },
   });
 }
@@ -126,7 +128,8 @@ export async function getHotelAvailability(
   if (params?.checkOutDate) qs.set("checkOutDate", params.checkOutDate);
   if (params?.guestCount !== undefined) qs.set("guestCount", String(params.guestCount));
   const q = qs.toString();
-  return apiFetch<Room[]>(`/hotels/${hotelId}/rooms${q ? `?${q}` : ""}`, {
+  const path = q ? `/hotels/${hotelId}/rooms?${q}` : `/hotels/${hotelId}/rooms`;
+  return apiFetch<Room[]>(path, {
     cache: "no-store",
   });
 }
@@ -143,7 +146,8 @@ export async function listMyReservations(
   if (params?.page !== undefined) qs.set("page", String(params.page));
   if (params?.size !== undefined) qs.set("size", String(params.size));
   const q = qs.toString();
-  return apiFetch<PageResponse<Reservation>>(`/reservations/me${q ? `?${q}` : ""}`, {
+  const path = q ? `/reservations/me?${q}` : "/reservations/me";
+  return apiFetch<PageResponse<Reservation>>(path, {
     headers: authHeader(token),
     cache: "no-store",
   });
@@ -157,7 +161,8 @@ export async function listAdminReservations(
   if (params?.page !== undefined) qs.set("page", String(params.page));
   if (params?.size !== undefined) qs.set("size", String(params.size));
   const q = qs.toString();
-  return apiFetch<PageResponse<Reservation>>(`/admin/reservations${q ? `?${q}` : ""}`, {
+  const path = q ? `/admin/reservations?${q}` : "/admin/reservations";
+  return apiFetch<PageResponse<Reservation>>(path, {
     headers: authHeader(token),
     cache: "no-store",
   });
@@ -171,7 +176,8 @@ export async function listAdminUsers(
   if (params?.page !== undefined) qs.set("page", String(params.page));
   if (params?.size !== undefined) qs.set("size", String(params.size));
   const q = qs.toString();
-  return apiFetch<PageResponse<UserProfile>>(`/admin/users${q ? `?${q}` : ""}`, {
+  const path = q ? `/admin/users?${q}` : "/admin/users";
+  return apiFetch<PageResponse<UserProfile>>(path, {
     headers: authHeader(token),
     cache: "no-store",
   });
