@@ -90,7 +90,7 @@ export function useUpdateRoom() {
   return useMutation({
     mutationFn: (request: UpdateRoomRequest & { id: string }) =>
       hotelsModule.updateRoom(request.id, request),
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.hotels.all,
       })

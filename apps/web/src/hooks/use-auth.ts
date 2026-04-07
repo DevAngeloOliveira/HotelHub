@@ -7,7 +7,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { authModule, queryKeys, authInterceptor } from '@hotelhub/sdk'
-import type { LoginRequest, RegisterRequest, User } from '@hotelhub/sdk'
+import type { LoginRequest, RegisterRequest } from '@hotelhub/sdk'
 
 /**
  * Hook para obter usuário autenticado
