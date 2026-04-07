@@ -4,12 +4,14 @@ ARG BASE_API_IMAGE=gradle:8.14.4-jdk21
 ARG RUNTIME_IMAGE=eclipse-temurin:21-jre
 
 FROM ${BASE_API_IMAGE} AS build
+WORKDIR /workspace
+
+COPY apps/api/build.gradle.kts apps/api/settings.gradle.kts apps/api/gradlew apps/api/gradlew.bat ./apps/api/
+COPY apps/api/gradle ./apps/api/gradle
+COPY apps/api/src ./apps/api/src
+COPY gradle ./gradle
+
 WORKDIR /workspace/apps/api
-
-COPY apps/api/build.gradle.kts apps/api/settings.gradle.kts apps/api/gradlew apps/api/gradlew.bat ./
-COPY apps/api/gradle ./gradle
-COPY apps/api/src ./src
-
 RUN chmod +x gradlew && ./gradlew --no-daemon clean bootJar
 
 FROM ${RUNTIME_IMAGE} AS runtime
