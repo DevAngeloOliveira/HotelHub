@@ -1,6 +1,7 @@
 package com.hotelhub.api.reservations.presentation.dto
 
 import com.hotelhub.api.reservations.domain.Reservation
+import com.hotelhub.api.shared.domain.BookingSource
 import com.hotelhub.api.shared.domain.ReservationStatus
 import jakarta.validation.constraints.Min
 import java.math.BigDecimal
@@ -15,7 +16,9 @@ data class CreateReservationRequest(
     val checkOutDate: LocalDate,
 
     @field:Min(1)
-    val guestCount: Int
+    val guestCount: Int,
+
+    val bookingSource: BookingSource? = null
 )
 
 data class ReservationResponse(
@@ -28,9 +31,12 @@ data class ReservationResponse(
     val guestCount: Int,
     val totalAmount: BigDecimal,
     val status: ReservationStatus,
+    val bookingSource: BookingSource,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val cancelledAt: Instant?
+    val cancelledAt: Instant?,
+    val checkedInAt: Instant?,
+    val checkedOutAt: Instant?
 )
 
 fun Reservation.toResponse(): ReservationResponse {
@@ -44,8 +50,11 @@ fun Reservation.toResponse(): ReservationResponse {
         guestCount = guestCount,
         totalAmount = totalAmount,
         status = status,
+        bookingSource = bookingSource,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        cancelledAt = cancelledAt
+        cancelledAt = cancelledAt,
+        checkedInAt = checkedInAt,
+        checkedOutAt = checkedOutAt
     )
 }

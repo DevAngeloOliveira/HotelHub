@@ -1,5 +1,6 @@
 package com.hotelhub.api.reservations.domain
 
+import com.hotelhub.api.shared.domain.ReservationStatus
 import com.hotelhub.api.shared.error.BusinessRuleException
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -29,5 +30,17 @@ object ReservationRules {
 
     fun canCancel(checkInDate: LocalDate, today: LocalDate = LocalDate.now()): Boolean {
         return today.isBefore(checkInDate)
+    }
+
+    fun canCheckIn(status: ReservationStatus, checkInDate: LocalDate, today: LocalDate = LocalDate.now()): Boolean {
+        return status == ReservationStatus.CONFIRMED && !today.isBefore(checkInDate)
+    }
+
+    fun canCheckOut(status: ReservationStatus): Boolean {
+        return status == ReservationStatus.CHECKED_IN
+    }
+
+    fun canMarkNoShow(status: ReservationStatus, checkInDate: LocalDate, today: LocalDate = LocalDate.now()): Boolean {
+        return status == ReservationStatus.CONFIRMED && today.isAfter(checkInDate)
     }
 }

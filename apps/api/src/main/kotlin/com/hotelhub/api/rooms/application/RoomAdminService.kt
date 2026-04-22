@@ -1,5 +1,6 @@
 package com.hotelhub.api.rooms.application
 
+import com.hotelhub.api.hotels.infrastructure.persistence.mapper.encodeStringList
 import com.hotelhub.api.hotels.infrastructure.persistence.repository.HotelJpaRepository
 import com.hotelhub.api.rooms.domain.Room
 import com.hotelhub.api.rooms.infrastructure.persistence.entity.RoomEntity
@@ -42,6 +43,7 @@ class RoomAdminService(
             capacity = request.capacity,
             pricePerNight = request.pricePerNight,
             quantity = request.quantity,
+            imageUrls = encodeStringList(request.imageUrls.map { it.trim() }),
             status = EntityStatus.ACTIVE
         )
         return roomRepository.save(entity).toDomain()
@@ -68,6 +70,7 @@ class RoomAdminService(
         entity.capacity = request.capacity
         entity.pricePerNight = request.pricePerNight
         entity.quantity = request.quantity
+        entity.imageUrls = encodeStringList(request.imageUrls.map { it.trim() })
 
         return roomRepository.save(entity).toDomain()
     }

@@ -1,5 +1,6 @@
 package com.hotelhub.api.reservations.infrastructure.persistence.entity
 
+import com.hotelhub.api.shared.domain.BookingSource
 import com.hotelhub.api.shared.domain.ReservationStatus
 import com.hotelhub.api.shared.infrastructure.persistence.TimestampedEntity
 import jakarta.persistence.Column
@@ -44,6 +45,16 @@ class ReservationEntity(
     @Column(nullable = false, length = 20)
     var status: ReservationStatus,
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "booking_source", nullable = false, length = 30)
+    var bookingSource: BookingSource = BookingSource.DIRECT,
+
     @Column(name = "cancelled_at")
-    var cancelledAt: Instant? = null
+    var cancelledAt: Instant? = null,
+
+    @Column(name = "checked_in_at")
+    var checkedInAt: Instant? = null,
+
+    @Column(name = "checked_out_at")
+    var checkedOutAt: Instant? = null
 ) : TimestampedEntity()

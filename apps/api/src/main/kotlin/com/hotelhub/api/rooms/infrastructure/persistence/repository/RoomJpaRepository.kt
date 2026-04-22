@@ -15,4 +15,6 @@ interface RoomJpaRepository : JpaRepository<RoomEntity, UUID> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     fun findWithLockingById(id: UUID): Optional<RoomEntity>
+
+    fun countByStatus(status: EntityStatus): Long
 }
