@@ -21,6 +21,7 @@ data class RoomSummaryResponse(
     val capacity: Int,
     val pricePerNight: BigDecimal,
     val quantity: Int,
+    val imageUrls: List<String>,
     val status: EntityStatus,
     val available: Boolean? = null,
     val availableUnits: Int? = null
@@ -35,6 +36,7 @@ data class RoomAdminResponse(
     val capacity: Int,
     val pricePerNight: BigDecimal,
     val quantity: Int,
+    val imageUrls: List<String>,
     val status: EntityStatus,
     val createdAt: Instant,
     val updatedAt: Instant
@@ -62,7 +64,9 @@ data class CreateRoomRequest(
     val pricePerNight: BigDecimal,
 
     @field:Min(1)
-    val quantity: Int
+    val quantity: Int,
+
+    val imageUrls: List<@Size(max = 500) String> = emptyList()
 )
 
 data class UpdateRoomRequest(
@@ -87,7 +91,9 @@ data class UpdateRoomRequest(
     val pricePerNight: BigDecimal,
 
     @field:Min(1)
-    val quantity: Int
+    val quantity: Int,
+
+    val imageUrls: List<@Size(max = 500) String> = emptyList()
 )
 
 data class UpdateRoomStatusRequest(
@@ -105,6 +111,7 @@ fun Room.toSummaryResponse(available: Boolean? = null, availableUnits: Int? = nu
         capacity = capacity,
         pricePerNight = pricePerNight,
         quantity = quantity,
+        imageUrls = imageUrls,
         status = status,
         available = available,
         availableUnits = availableUnits
@@ -121,6 +128,7 @@ fun Room.toAdminResponse(): RoomAdminResponse {
         capacity = capacity,
         pricePerNight = pricePerNight,
         quantity = quantity,
+        imageUrls = imageUrls,
         status = status,
         createdAt = createdAt,
         updatedAt = updatedAt

@@ -1,5 +1,6 @@
 package com.hotelhub.api.rooms.infrastructure.persistence.mapper
 
+import com.hotelhub.api.hotels.infrastructure.persistence.mapper.decodeStringList
 import com.hotelhub.api.rooms.domain.Room
 import com.hotelhub.api.rooms.infrastructure.persistence.entity.RoomEntity
 
@@ -13,6 +14,7 @@ fun RoomEntity.toDomain(): Room {
         capacity = capacity,
         pricePerNight = pricePerNight,
         quantity = quantity,
+        imageUrls = decodeStringList(imageUrls),
         status = status,
         createdAt = createdAt,
         updatedAt = updatedAt

@@ -14,8 +14,11 @@ fun ReservationEntity.toDomain(): Reservation {
         guestCount = guestCount,
         totalAmount = totalAmount,
         status = status,
+        bookingSource = bookingSource,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        cancelledAt = cancelledAt
+        cancelledAt = cancelledAt,
+        checkedInAt = checkedInAt,
+        checkedOutAt = checkedOutAt
     )
 }

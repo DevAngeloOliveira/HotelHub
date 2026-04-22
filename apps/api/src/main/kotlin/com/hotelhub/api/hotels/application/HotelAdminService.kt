@@ -4,6 +4,7 @@ import com.hotelhub.api.destinations.infrastructure.persistence.repository.Desti
 import com.hotelhub.api.hotels.domain.Hotel
 import com.hotelhub.api.hotels.infrastructure.persistence.entity.HotelEntity
 import com.hotelhub.api.hotels.infrastructure.persistence.mapper.encodeAmenities
+import com.hotelhub.api.hotels.infrastructure.persistence.mapper.encodeStringList
 import com.hotelhub.api.hotels.infrastructure.persistence.mapper.toDomain
 import com.hotelhub.api.hotels.infrastructure.persistence.repository.HotelJpaRepository
 import com.hotelhub.api.hotels.presentation.dto.CreateHotelRequest
@@ -48,6 +49,7 @@ class HotelAdminService(
             address = request.address.trim(),
             category = request.category.trim(),
             amenities = encodeAmenities(request.amenities.map { it.trim() }),
+            imageUrls = encodeStringList(request.imageUrls.map { it.trim() }),
             contactPhone = request.contactPhone.trim(),
             contactEmail = request.contactEmail.trim().lowercase(),
             status = EntityStatus.ACTIVE
@@ -80,6 +82,7 @@ class HotelAdminService(
         entity.address = request.address.trim()
         entity.category = request.category.trim()
         entity.amenities = encodeAmenities(request.amenities.map { it.trim() })
+        entity.imageUrls = encodeStringList(request.imageUrls.map { it.trim() })
         entity.contactPhone = request.contactPhone.trim()
         entity.contactEmail = request.contactEmail.trim().lowercase()
 

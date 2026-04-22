@@ -34,6 +34,9 @@ class HotelEntity(
     @Column(nullable = false, columnDefinition = "text")
     var amenities: String,
 
+    @Column(name = "image_urls", nullable = false, columnDefinition = "text")
+    var imageUrls: String = "[]",
+
     @Column(name = "contact_phone", nullable = false, length = 32)
     var contactPhone: String,
 

@@ -15,6 +15,7 @@ data class Room(
     val capacity: Int,
     val pricePerNight: BigDecimal,
     val quantity: Int,
+    val imageUrls: List<String>,
     val status: EntityStatus,
     val createdAt: Instant,
     val updatedAt: Instant

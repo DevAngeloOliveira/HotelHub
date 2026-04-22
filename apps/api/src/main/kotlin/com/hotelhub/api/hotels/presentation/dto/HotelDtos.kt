@@ -19,6 +19,7 @@ data class HotelSummaryResponse(
     val address: String,
     val category: String,
     val amenities: List<String>,
+    val imageUrls: List<String>,
     val contactPhone: String,
     val contactEmail: String
 )
@@ -31,6 +32,7 @@ data class HotelDetailResponse(
     val address: String,
     val category: String,
     val amenities: List<String>,
+    val imageUrls: List<String>,
     val contactPhone: String,
     val contactEmail: String,
     val status: EntityStatus,
@@ -45,6 +47,7 @@ data class HotelAdminResponse(
     val address: String,
     val category: String,
     val amenities: List<String>,
+    val imageUrls: List<String>,
     val contactPhone: String,
     val contactEmail: String,
     val status: EntityStatus,
@@ -73,6 +76,8 @@ data class CreateHotelRequest(
 
     @field:NotEmpty
     val amenities: List<@Size(max = 60) String>,
+
+    val imageUrls: List<@Size(max = 500) String> = emptyList(),
 
     @field:NotBlank
     @field:Pattern(regexp = "^[0-9+()\\-\\s]{8,32}$")
@@ -106,6 +111,8 @@ data class UpdateHotelRequest(
     @field:NotEmpty
     val amenities: List<@Size(max = 60) String>,
 
+    val imageUrls: List<@Size(max = 500) String> = emptyList(),
+
     @field:NotBlank
     @field:Pattern(regexp = "^[0-9+()\\-\\s]{8,32}$")
     val contactPhone: String,
@@ -129,6 +136,7 @@ fun Hotel.toSummaryResponse(): HotelSummaryResponse {
         address = address,
         category = category,
         amenities = amenities,
+        imageUrls = imageUrls,
         contactPhone = contactPhone,
         contactEmail = contactEmail
     )
@@ -143,6 +151,7 @@ fun Hotel.toAdminResponse(): HotelAdminResponse {
         address = address,
         category = category,
         amenities = amenities,
+        imageUrls = imageUrls,
         contactPhone = contactPhone,
         contactEmail = contactEmail,
         status = status,
