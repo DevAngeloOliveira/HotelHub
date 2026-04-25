@@ -1,21 +1,21 @@
-package com.hotelhub.api.hotels.domain
+package com.hotelhub.api.packages.domain
 
 import com.hotelhub.api.shared.domain.EntityStatus
 import java.io.Serializable
+import java.math.BigDecimal
 import java.time.Instant
+import java.time.LocalDate
 import java.util.UUID
 
-data class Hotel(
+data class TravelPackage(
     val id: UUID,
-    val destinationId: UUID,
+    val hotelId: UUID,
     val name: String,
     val description: String,
-    val address: String,
-    val category: String,
-    val amenities: List<String>,
-    val imageUrls: List<String>,
-    val contactPhone: String,
-    val contactEmail: String,
+    val highlightedServices: List<String>,
+    val discountPercentage: BigDecimal,
+    val validFrom: LocalDate,
+    val validTo: LocalDate,
     val status: EntityStatus,
     val createdAt: Instant,
     val updatedAt: Instant

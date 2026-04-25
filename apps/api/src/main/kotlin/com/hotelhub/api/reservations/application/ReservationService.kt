@@ -11,6 +11,7 @@ import com.hotelhub.api.reservations.infrastructure.persistence.repository.Reser
 import com.hotelhub.api.reservations.presentation.dto.CreateReservationRequest
 import com.hotelhub.api.rooms.infrastructure.persistence.repository.RoomJpaRepository
 import com.hotelhub.api.shared.config.CacheNames
+import com.hotelhub.api.shared.domain.BookingSource
 import com.hotelhub.api.shared.domain.EntityStatus
 import com.hotelhub.api.shared.domain.ReservationStatus
 import com.hotelhub.api.shared.error.BusinessRuleException
@@ -120,7 +121,8 @@ class ReservationService(
                     checkOutDate = request.checkOutDate,
                     guestCount = request.guestCount,
                     totalAmount = totalAmount,
-                    status = ReservationStatus.CONFIRMED
+                    status = ReservationStatus.CONFIRMED,
+                    bookingSource = request.bookingSource ?: BookingSource.DIRECT
                 )
             ).toDomain()
 
@@ -189,6 +191,60 @@ class ReservationService(
             logger.error("Unexpected error cancelling reservation", mapOf("reservationId" to reservationId, "userId" to userId), e)
             throw e
         }
+    }
+
+    @CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+    @Transactional
+    fun checkIn(userId: UUID, reservationId: UUID): Reservation {
+        logger.debug("Checking in reservation", mapOf("userId" to userId, "reservationId" to reservationId))
+        val reservation = reservationRepository.findByIdAndUserId(reservationId, userId)
+            .orElseThrow { ResourceNotFoundException("Reservation not found") }
+
+        if (!ReservationRules.canCheckIn(reservation.status, reservation.checkInDate)) {
+            throw BusinessRuleException("Check-in requires CONFIRMED status and check-in date must not be in the future")
+        }
+
+        reservation.status = ReservationStatus.CHECKED_IN
+        reservation.checkedInAt = Instant.now()
+        val updated = reservationRepository.save(reservation).toDomain()
+
+        auditService.log(
+            actorId = userId,
+            action = "RESERVATION_CHECKED_IN",
+            entityType = "RESERVATION",
+            entityId = updated.id,
+            metadata = mapOf("checkedInAt" to updated.checkedInAt.toString())
+        )
+
+        logger.info("Guest checked in", mapOf("reservationId" to updated.id, "userId" to userId))
+        return updated
+    }
+
+    @CacheEvict(cacheNames = [CacheNames.ROOMS_PUBLIC_AVAILABILITY_BY_HOTEL], allEntries = true)
+    @Transactional
+    fun checkOut(userId: UUID, reservationId: UUID): Reservation {
+        logger.debug("Checking out reservation", mapOf("userId" to userId, "reservationId" to reservationId))
+        val reservation = reservationRepository.findByIdAndUserId(reservationId, userId)
+            .orElseThrow { ResourceNotFoundException("Reservation not found") }
+
+        if (!ReservationRules.canCheckOut(reservation.status)) {
+            throw BusinessRuleException("Check-out requires reservation to be in CHECKED_IN status")
+        }
+
+        reservation.status = ReservationStatus.CHECKED_OUT
+        reservation.checkedOutAt = Instant.now()
+        val updated = reservationRepository.save(reservation).toDomain()
+
+        auditService.log(
+            actorId = userId,
+            action = "RESERVATION_CHECKED_OUT",
+            entityType = "RESERVATION",
+            entityId = updated.id,
+            metadata = mapOf("checkedOutAt" to updated.checkedOutAt.toString())
+        )
+
+        logger.info("Guest checked out", mapOf("reservationId" to updated.id, "userId" to userId))
+        return updated
     }
 
     private fun validateReservationDates(checkInDate: LocalDate, checkOutDate: LocalDate) {

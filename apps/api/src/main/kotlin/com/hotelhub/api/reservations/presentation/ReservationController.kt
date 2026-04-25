@@ -114,7 +114,7 @@ class ReservationController(
             ApiResponse(responseCode = "200", description = "Reservation cancelled successfully"),
             ApiResponse(responseCode = "401", description = "Unauthorized - authentication required"),
             ApiResponse(responseCode = "404", description = "Reservation not found"),
-            ApiResponse(responseCode = "409", description = "Reservation cannot be cancelled (already cancelled or check-in has passed)")
+            ApiResponse(responseCode = "409", description = "Reservation cannot be cancelled")
         ]
     )
     fun cancel(
@@ -124,5 +124,49 @@ class ReservationController(
     ): ResponseEntity<ReservationResponse> {
         val userId = SecurityUtils.requireCurrentUserId()
         return ResponseEntity.ok(reservationService.cancel(userId, id).toResponse())
+    }
+
+    @PatchMapping("/{id}/check-in")
+    @Operation(
+        summary = "Check in to a reservation",
+        description = "Mark a CONFIRMED reservation as CHECKED_IN. Only allowed on or after the check-in date"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Checked in successfully"),
+            ApiResponse(responseCode = "400", description = "Check-in conditions not met"),
+            ApiResponse(responseCode = "401", description = "Unauthorized - authentication required"),
+            ApiResponse(responseCode = "404", description = "Reservation not found")
+        ]
+    )
+    fun checkIn(
+        @PathVariable
+        @Parameter(description = "Reservation ID (UUID)")
+        id: UUID
+    ): ResponseEntity<ReservationResponse> {
+        val userId = SecurityUtils.requireCurrentUserId()
+        return ResponseEntity.ok(reservationService.checkIn(userId, id).toResponse())
+    }
+
+    @PatchMapping("/{id}/check-out")
+    @Operation(
+        summary = "Check out from a reservation",
+        description = "Mark a CHECKED_IN reservation as CHECKED_OUT"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Checked out successfully"),
+            ApiResponse(responseCode = "400", description = "Reservation is not in CHECKED_IN status"),
+            ApiResponse(responseCode = "401", description = "Unauthorized - authentication required"),
+            ApiResponse(responseCode = "404", description = "Reservation not found")
+        ]
+    )
+    fun checkOut(
+        @PathVariable
+        @Parameter(description = "Reservation ID (UUID)")
+        id: UUID
+    ): ResponseEntity<ReservationResponse> {
+        val userId = SecurityUtils.requireCurrentUserId()
+        return ResponseEntity.ok(reservationService.checkOut(userId, id).toResponse())
     }
 }

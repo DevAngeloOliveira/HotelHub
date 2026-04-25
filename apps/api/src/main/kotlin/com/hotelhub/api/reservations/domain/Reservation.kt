@@ -1,5 +1,6 @@
 package com.hotelhub.api.reservations.domain
 
+import com.hotelhub.api.shared.domain.BookingSource
 import com.hotelhub.api.shared.domain.ReservationStatus
 import java.math.BigDecimal
 import java.time.Instant
@@ -16,7 +17,10 @@ data class Reservation(
     val guestCount: Int,
     val totalAmount: BigDecimal,
     val status: ReservationStatus,
+    val bookingSource: BookingSource,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val cancelledAt: Instant?
+    val cancelledAt: Instant?,
+    val checkedInAt: Instant?,
+    val checkedOutAt: Instant?
 )

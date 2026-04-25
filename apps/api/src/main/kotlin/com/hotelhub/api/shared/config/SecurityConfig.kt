@@ -36,6 +36,7 @@ class SecurityConfig(
                     "/destinations/**",
                     "/hotels/**",
                     "/actuator/**",
+                    "/packages/**",
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/swagger-ui.html"

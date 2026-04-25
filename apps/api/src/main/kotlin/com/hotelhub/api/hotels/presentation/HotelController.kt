@@ -84,6 +84,7 @@ class HotelController(
                 address = hotel.address,
                 category = hotel.category,
                 amenities = hotel.amenities,
+                imageUrls = hotel.imageUrls,
                 contactPhone = hotel.contactPhone,
                 contactEmail = hotel.contactEmail,
                 status = hotel.status,
