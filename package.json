@@ -21,6 +21,12 @@
     "docker:up": "npm run docker:build:base && npm run docker:build:services && docker compose up -d db redis api web nginx",
     "docker:down": "docker compose down -v",
     "docker:ps": "docker compose ps",
+    "docker:rebuild": "npm run docker:build:all && docker-compose --env-file .env.local up -d --build",
+    "docker:start": "docker-compose --env-file .env.local up -d --build",
+    "docker:restart": "docker-compose --env-file .env.local down && docker-compose --env-file .env.local up -d --build",
+    "docker:logs": "docker-compose --env-file .env.local logs -f",
+    "docker:logs:web": "docker-compose --env-file .env.local logs -f web",
+    "docker:logs:api": "docker-compose --env-file .env.local logs -f api",
     "dev:web": "npm run dev --workspace web",
     "dev:mobile": "npm run start --workspace mobile",
     "test:api": "cd apps/api && ./gradlew test"

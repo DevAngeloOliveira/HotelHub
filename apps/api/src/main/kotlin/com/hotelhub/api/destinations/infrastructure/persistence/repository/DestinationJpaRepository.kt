@@ -21,11 +21,11 @@ interface DestinationJpaRepository : JpaRepository<DestinationEntity, UUID> {
         """
         select d from DestinationEntity d
         where d.status = :status
-          and (:name is null or lower(d.name) like lower(concat('%', :name, '%')))
-          and (:city is null or lower(d.city) like lower(concat('%', :city, '%')))
-          and (:state is null or lower(d.state) like lower(concat('%', :state, '%')))
-          and (:country is null or lower(d.country) like lower(concat('%', :country, '%')))
-          and (:category is null or lower(d.category) like lower(concat('%', :category, '%')))
+          and (:name is null or lower(d.name) like concat('%', lower(cast(:name as string)), '%'))
+          and (:city is null or lower(d.city) like concat('%', lower(cast(:city as string)), '%'))
+          and (:state is null or lower(d.state) like concat('%', lower(cast(:state as string)), '%'))
+          and (:country is null or lower(d.country) like concat('%', lower(cast(:country as string)), '%'))
+          and (:category is null or lower(d.category) like concat('%', lower(cast(:category as string)), '%'))
         """
     )
     fun searchPublic(

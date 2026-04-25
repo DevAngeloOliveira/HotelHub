@@ -104,7 +104,7 @@ class ReservationIntegrationTest : BaseIntegrationTest() {
         val reservationId = firstReservationJson.path("id").asText()
         assertNotNull(reservationId)
         assertEquals("CONFIRMED", firstReservationJson.path("status").asText())
-        assertEquals("400.00", firstReservationJson.path("totalAmount").asText())
+        assertEquals(0, BigDecimal("400.00").compareTo(firstReservationJson.path("totalAmount").decimalValue()))
 
         mockMvc.post("/reservations") {
             contentType = MediaType.APPLICATION_JSON
