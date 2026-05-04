@@ -53,7 +53,10 @@ export class HttpClient {
    */
   private buildUrl(path: string, params?: Record<string, unknown>): string {
     const baseUrl = configManager.getBaseUrl()
-    const url = new URL(path, baseUrl)
+    const isRelativeBase = baseUrl.startsWith('/')
+    const url = isRelativeBase
+      ? new URL(`${baseUrl.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`, 'http://hotelhub.local')
+      : new URL(path, baseUrl)
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -64,7 +67,7 @@ export class HttpClient {
       })
     }
 
-    return url.toString()
+    return isRelativeBase ? `${url.pathname}${url.search}` : url.toString()
   }
 
   /**

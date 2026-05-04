@@ -32,7 +32,12 @@ class SdkConfigManager {
     }
 
     // Servidor (Node.js SSR)
-    return process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_BASE_URL || '/api/v1'
+    return (
+      process.env.API_INTERNAL_URL ||
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      process.env.EXPO_PUBLIC_API_BASE_URL ||
+      '/api/v1'
+    )
   }
 
   getConfig(): SdkConfig {

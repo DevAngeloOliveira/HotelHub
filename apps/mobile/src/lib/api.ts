@@ -53,7 +53,7 @@ type DestinationResponse = {
   state: string;
   country: string;
   category: string;
-  description: string;
+  description?: string;
   featuredImageUrl?: string;
   imageUrl?: string;
   status?: string;
@@ -63,9 +63,9 @@ type HotelResponse = {
   id: string;
   destinationId: string;
   name: string;
-  description: string;
-  address: string;
-  category: string;
+  description?: string;
+  address?: string;
+  category?: string;
   amenities?: string[] | string;
   contactPhone?: string;
   contactEmail?: string;
@@ -94,7 +94,7 @@ type ReservationResponse = {
   checkOutDate: string;
   guestCount: number;
   totalAmount: number;
-  status: "CONFIRMED" | "CANCELLED";
+  status: Reservation["status"];
   createdAt: string;
   updatedAt?: string;
   cancelledAt?: string;
@@ -133,7 +133,7 @@ function mapDestination(source: DestinationResponse): Destination {
     state: source.state,
     country: source.country,
     category: source.category,
-    description: source.description,
+    description: source.description ?? "",
     imageUrl: source.imageUrl ?? source.featuredImageUrl ?? "",
     status: source.status === "INACTIVE" ? "INACTIVE" : "ACTIVE",
     featured: true,
@@ -145,9 +145,9 @@ function mapHotel(source: HotelResponse): Hotel {
     id: source.id,
     destinationId: source.destinationId,
     name: source.name,
-    description: source.description,
-    address: source.address,
-    category: source.category,
+    description: source.description ?? "",
+    address: source.address ?? "",
+    category: source.category ?? "",
     amenities: normalizeAmenities(source.amenities),
     status: source.status === "INACTIVE" ? "INACTIVE" : "ACTIVE",
   };

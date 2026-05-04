@@ -5,18 +5,19 @@
 export interface Destination {
   id: string
   name: string
-  description: string
+  slug: string
+  description?: string
   country: string
-  state?: string
-  city?: string
-  category?: string
-  imageUrl?: string
-  createdAt: string
-  updatedAt: string
+  state: string
+  city: string
+  category: string
+  featuredImageUrl: string
+  status?: 'ACTIVE' | 'INACTIVE'
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface DestinationDetail extends Destination {
-  hotelCount: number
   hotels?: Hotel[]
 }
 
@@ -27,29 +28,33 @@ export interface DestinationFilters {
   category?: string
   country?: string
   state?: string
+  city?: string
 }
 
 export interface CreateDestinationRequest {
   name: string
+  slug: string
   description: string
   country: string
-  state?: string
-  city?: string
-  category?: string
-  imageUrl?: string
+  state: string
+  city: string
+  category: string
+  featuredImageUrl: string
 }
 
-export interface UpdateDestinationRequest extends Partial<CreateDestinationRequest> {}
+export interface UpdateDestinationRequest extends CreateDestinationRequest {}
 
 // Re-export Hotel para facilitar imports
 export interface Hotel {
   id: string
-  name: string
-  description?: string
-  rating?: number
-  address?: string
-  imageUrl?: string
   destinationId: string
-  createdAt: string
-  updatedAt: string
+  name: string
+  address?: string
+  category?: string
+  amenities?: string[]
+  imageUrls?: string[]
+  contactPhone?: string
+  contactEmail?: string
+  createdAt?: string
+  updatedAt?: string
 }

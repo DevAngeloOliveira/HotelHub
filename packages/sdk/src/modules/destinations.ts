@@ -29,6 +29,7 @@ export const destinationsModule = {
       ...(filters?.category && { category: filters.category }),
       ...(filters?.country && { country: filters.country }),
       ...(filters?.state && { state: filters.state }),
+      ...(filters?.city && { city: filters.city }),
     })
   },
 

@@ -16,15 +16,18 @@ export interface RegisterRequest {
 export interface AuthTokenResponse {
   accessToken: string
   refreshToken?: string
-  expiresIn: number
+  expiresIn?: number
   tokenType: string
+  user: User
 }
 
 export interface User {
   id: string
   name: string
   email: string
+  phone: string
   role: 'CLIENT' | 'ADMIN'
+  status: 'ACTIVE' | 'INACTIVE'
   createdAt: string
   updatedAt: string
 }

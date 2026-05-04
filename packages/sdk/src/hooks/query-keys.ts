@@ -48,6 +48,18 @@ export const queryKeys = {
       [...queryKeys.reservations.details(), id] as const,
   },
 
+  // Packages
+  packages: {
+    all: ['packages'] as const,
+    lists: () => [...queryKeys.packages.all, 'list'] as const,
+    list: (filters?: unknown) =>
+      [...queryKeys.packages.lists(), filters] as const,
+    adminList: (filters?: unknown) =>
+      [...queryKeys.packages.lists(), 'admin', filters] as const,
+    details: () => [...queryKeys.packages.all, 'detail'] as const,
+    detail: (id: string) => [...queryKeys.packages.details(), id] as const,
+  },
+
   // Profile/Users
   profile: {
     all: ['profile'] as const,

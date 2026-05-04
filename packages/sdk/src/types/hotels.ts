@@ -4,39 +4,42 @@
 
 export interface Hotel {
   id: string
+  destinationId: string
   name: string
   description?: string
-  rating?: number
   address?: string
-  imageUrl?: string
-  destinationId: string
-  createdAt: string
-  updatedAt: string
+  category?: string
+  amenities?: string[]
+  imageUrls?: string[]
+  contactPhone?: string
+  contactEmail?: string
+  status?: 'ACTIVE' | 'INACTIVE'
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface HotelDetail extends Hotel {
-  roomCount: number
   rooms?: Room[]
-  amenities?: string[]
 }
 
 export interface Room {
   id: string
   hotelId: string
-  type: 'SINGLE' | 'DOUBLE' | 'SUITE' | 'DELUXE'
-  description?: string
-  price: number
+  name: string
+  type: string
+  description: string
   capacity: number
-  imageUrl?: string
-  createdAt: string
-  updatedAt: string
+  pricePerNight: number
+  quantity: number
+  imageUrls: string[]
+  status?: 'ACTIVE' | 'INACTIVE'
+  available?: boolean
+  availableUnits?: number
+  createdAt?: string
+  updatedAt?: string
 }
 
-export interface RoomAvailability extends Room {
-  available: boolean
-  booked: number
-  totalRooms: number
-}
+export interface RoomAvailability extends Room {}
 
 export interface RoomAvailabilityFilters {
   checkInDate: string // ISO date
@@ -48,31 +51,33 @@ export interface RoomAvailabilityFilters {
 
 export interface CreateRoomRequest {
   hotelId: string
-  type: 'SINGLE' | 'DOUBLE' | 'SUITE' | 'DELUXE'
-  description?: string
-  price: number
+  name: string
+  type: string
+  description: string
+  pricePerNight: number
   capacity: number
-  imageUrl?: string
+  quantity: number
+  imageUrls?: string[]
 }
 
-export interface UpdateRoomRequest extends Partial<CreateRoomRequest> {}
+export interface UpdateRoomRequest extends CreateRoomRequest {}
 
 export interface CreateHotelRequest {
   name: string
-  description?: string
-  rating?: number
-  address?: string
-  imageUrl?: string
+  description: string
+  address: string
+  category: string
   destinationId: string
-  amenities?: string[]
+  amenities: string[]
+  imageUrls?: string[]
+  contactPhone: string
+  contactEmail: string
 }
 
-export interface UpdateHotelRequest extends Partial<CreateHotelRequest> {}
+export interface UpdateHotelRequest extends CreateHotelRequest {}
 
 export interface HotelFilters {
   destinationId?: string
   page?: number
   size?: number
-  minRating?: number
-  maxPrice?: number
 }

@@ -8,8 +8,9 @@ export interface PaginatedResponse<T> {
   size: number
   totalElements: number
   totalPages: number
-  last: boolean
-  empty: boolean
+  sort: string
+  last?: boolean
+  empty?: boolean
 }
 
 export interface ApiError {

@@ -6,12 +6,10 @@ ARG RUNTIME_IMAGE=eclipse-temurin:21-jre
 FROM ${BASE_API_IMAGE} AS build
 WORKDIR /workspace
 
-COPY apps/api/build.gradle.kts apps/api/settings.gradle.kts apps/api/gradlew apps/api/gradlew.bat ./apps/api/
-COPY apps/api/gradle ./apps/api/gradle
-COPY apps/api/src ./apps/api/src
+COPY apps/api/ ./apps/api/
 
 WORKDIR /workspace/apps/api
-RUN chmod +x gradlew && ./gradlew --no-daemon clean bootJar
+RUN sed -i 's/\r$//' gradlew && chmod +x gradlew && ./gradlew --no-daemon clean bootJar
 
 FROM ${RUNTIME_IMAGE} AS runtime
 WORKDIR /app

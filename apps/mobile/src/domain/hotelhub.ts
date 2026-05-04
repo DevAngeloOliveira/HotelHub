@@ -1,6 +1,12 @@
 export type Role = "CLIENT" | "ADMIN";
 export type EntityStatus = "ACTIVE" | "INACTIVE";
-export type ReservationStatus = "CONFIRMED" | "CANCELLED";
+export type ReservationStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "CHECKED_IN"
+  | "CHECKED_OUT"
+  | "NO_SHOW"
+  | "CANCELLED";
 
 export interface UserProfile {
   id: string;

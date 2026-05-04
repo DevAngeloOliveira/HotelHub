@@ -33,8 +33,6 @@ export const hotelsModule = {
       page: filters?.page ?? 0,
       size: filters?.size ?? 20,
       ...(filters?.destinationId && { destinationId: filters.destinationId }),
-      ...(filters?.minRating && { minRating: filters.minRating }),
-      ...(filters?.maxPrice && { maxPrice: filters.maxPrice }),
     })
   },
 
@@ -53,15 +51,13 @@ export const hotelsModule = {
   async getRoomAvailability(
     id: string,
     filters: RoomAvailabilityFilters
-  ): Promise<PaginatedResponse<RoomAvailability>> {
-    return httpClient.get<PaginatedResponse<RoomAvailability>>(
+  ): Promise<RoomAvailability[]> {
+    return httpClient.get<RoomAvailability[]>(
       `/hotels/${id}/rooms`,
       {
         checkInDate: filters.checkInDate,
         checkOutDate: filters.checkOutDate,
         guestCount: filters.guestCount,
-        page: filters.page ?? 0,
-        size: filters.size ?? 20,
       }
     )
   },

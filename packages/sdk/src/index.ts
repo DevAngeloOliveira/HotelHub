@@ -55,12 +55,22 @@ export type {
 // Profile
 export type { UserProfile, UpdateProfileRequest, ChangePasswordRequest } from './types/profile'
 
+// Packages
+export type {
+  TravelPackage,
+  TravelPackageFilters,
+  CreateTravelPackageRequest,
+  UpdateTravelPackageRequest,
+  UpdateTravelPackageStatusRequest,
+} from './types/packages'
+
 // ===== MODULES =====
 export { authModule } from './modules/auth'
 export { destinationsModule } from './modules/destinations'
 export { hotelsModule } from './modules/hotels'
 export { reservationsModule } from './modules/reservations'
 export { profileModule } from './modules/profile'
+export { packagesModule } from './modules/packages'
 
 // ===== HOOKS UTILITIES =====
 export { queryKeys } from './hooks/query-keys'
