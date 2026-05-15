@@ -2,17 +2,8 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowUpRight, Building2 } from "lucide-react";
-
-interface Destination {
-  id: string;
-  name: string;
-  country: string;
-  image: string;
-  hotels: number;
-  tag: string;
-  priceFrom: number;
-}
+import { ArrowUpRight, MapPin } from "lucide-react";
+import type { Destination } from "@hotelhub/sdk";
 
 interface DestinationCardProps {
   destination: Destination;
@@ -35,7 +26,7 @@ export function DestinationCard({ destination, index = 0, size = "md" }: Destina
         <div className={`relative ${heights[size]} overflow-hidden`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={destination.image}
+            src={destination.featuredImageUrl}
             alt={destination.name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
@@ -46,7 +37,7 @@ export function DestinationCard({ destination, index = 0, size = "md" }: Destina
 
           <div className="absolute top-3 left-3">
             <span className="px-2.5 py-1 rounded-lg bg-[#111111]/80 backdrop-blur-sm border border-[#333333]/80 text-[#a78bfa] text-xs">
-              {destination.tag}
+              {destination.category}
             </span>
           </div>
 
@@ -65,18 +56,12 @@ export function DestinationCard({ destination, index = 0, size = "md" }: Destina
                 </h3>
                 <p className="text-[#a1a1aa] text-xs mt-0.5">{destination.country}</p>
               </div>
-              <div className="text-right">
-                <p className="text-[#71717a] text-xs">A partir de</p>
-                <p className="text-[#34d399]" style={{ fontWeight: 700 }}>
-                  R$ {destination.priceFrom}
-                </p>
-              </div>
             </div>
 
             <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/10">
-              <Building2 className="w-3 h-3 text-[#8b5cf6]" />
+              <MapPin className="w-3 h-3 text-[#8b5cf6]" />
               <span className="text-[#a1a1aa] text-xs">
-                {destination.hotels.toLocaleString()} hotéis disponíveis
+                {destination.city}, {destination.state}
               </span>
             </div>
           </div>

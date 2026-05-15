@@ -5,15 +5,25 @@ import Link from "next/link";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import {
   ArrowRight, Star, TrendingUp, Shield, HeadphonesIcon,
-  ChevronLeft, ChevronRight, Users, MapPin, Building2, Quote
+  ChevronLeft, ChevronRight, MapPin, Quote
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { destinationsModule, hotelsModule, packagesModule } from "@hotelhub/sdk";
 import { SearchBar } from "../components/SearchBar";
 import { DestinationCard } from "../components/DestinationCard";
 import { HotelCard } from "../components/HotelCard";
 import { PackageCard } from "../components/PackageCard";
-import { DESTINATIONS, HOTELS, PACKAGES, REVIEWS, STATS } from "../data/mock";
+import { REVIEWS, STATS } from "../data/mock";
 
 const HERO_BG = "https://images.unsplash.com/photo-1635752807994-212f7d1e678b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBob3RlbCUyMHBvb2wlMjBuaWdodCUyMGRhcmt8ZW58MXx8fHwxNzc3MTA4NjAzfDA&ixlib=rb-4.1.0&q=80&w=1920";
+
+function SkeletonCard({ className = "" }: { className?: string }) {
+  return (
+    <div className={`bg-[#0f0f0f] border border-[#1e1e1e] rounded-2xl animate-pulse ${className}`}>
+      <div className="h-full bg-[#1a1a1a] rounded-2xl" />
+    </div>
+  );
+}
 
 export function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -23,6 +33,25 @@ export function HomePage() {
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   const [activeReview, setActiveReview] = useState(0);
+
+  const { data: destinationsData, isLoading: loadingDestinations } = useQuery({
+    queryKey: ["destinations", "home"],
+    queryFn: () => destinationsModule.list({ size: 5 }),
+  });
+
+  const { data: hotelsData, isLoading: loadingHotels } = useQuery({
+    queryKey: ["hotels", "home"],
+    queryFn: () => hotelsModule.list({ size: 6 }),
+  });
+
+  const { data: packagesData, isLoading: loadingPackages } = useQuery({
+    queryKey: ["packages", "home"],
+    queryFn: () => packagesModule.list({ size: 4 }),
+  });
+
+  const destinations = destinationsData?.content ?? [];
+  const hotels = hotelsData?.content ?? [];
+  const packages = packagesData?.content ?? [];
 
   return (
     <div className="min-h-screen bg-[#000000]">
@@ -200,15 +229,28 @@ export function HomePage() {
         </div>
 
         {/* Masonry-like grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="col-span-2 row-span-2">
-            <DestinationCard destination={DESTINATIONS[0]} index={0} size="lg" />
+        {loadingDestinations ? (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <SkeletonCard className="col-span-2 row-span-2 h-80" />
+            <SkeletonCard className="h-60" />
+            <SkeletonCard className="h-60" />
+            <SkeletonCard className="h-60" />
+            <SkeletonCard className="h-60" />
           </div>
-          <DestinationCard destination={DESTINATIONS[1]} index={1} size="md" />
-          <DestinationCard destination={DESTINATIONS[2]} index={2} size="md" />
-          <DestinationCard destination={DESTINATIONS[3]} index={3} size="md" />
-          <DestinationCard destination={DESTINATIONS[4]} index={4} size="md" />
-        </div>
+        ) : destinations.length > 0 ? (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {destinations[0] && (
+              <div className="col-span-2 row-span-2">
+                <DestinationCard destination={destinations[0]} index={0} size="lg" />
+              </div>
+            )}
+            {destinations.slice(1, 5).map((dest, i) => (
+              <DestinationCard key={dest.id} destination={dest} index={i + 1} size="md" />
+            ))}
+          </div>
+        ) : (
+          <p className="text-[#555] text-sm text-center py-10">Nenhum destino encontrado.</p>
+        )}
 
         {/* Mobile link */}
         <div className="flex justify-center mt-6 sm:hidden">
@@ -223,25 +265,31 @@ export function HomePage() {
       </section>
 
       {/* ── FEATURED PACKAGE ─────────────────────────────────── */}
-      <section className="py-16 bg-[#050505] border-y border-[#1a1a1a]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-6 h-px bg-gradient-to-r from-[#34d399] to-[#8b5cf6]" />
-                <span className="text-[#34d399] text-xs uppercase tracking-widest">Destaque da semana</span>
+      {(loadingPackages || packages.length > 0) && (
+        <section className="py-16 bg-[#050505] border-y border-[#1a1a1a]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-px bg-gradient-to-r from-[#34d399] to-[#8b5cf6]" />
+                  <span className="text-[#34d399] text-xs uppercase tracking-widest">Destaque da semana</span>
+                </div>
+                <h2 className="text-white">Pacote mais reservado</h2>
+                <p className="text-[#71717a] text-sm mt-1">Oferta por tempo limitado</p>
               </div>
-              <h2 className="text-white">Pacote mais reservado</h2>
-              <p className="text-[#71717a] text-sm mt-1">Oferta por tempo limitado</p>
+              <div className="hidden sm:flex items-center gap-1.5 bg-[#34d399]/10 border border-[#34d399]/30 px-3 py-1.5 rounded-full">
+                <div className="w-2 h-2 rounded-full bg-[#34d399] animate-pulse" />
+                <span className="text-[#34d399] text-xs">Oferta limitada</span>
+              </div>
             </div>
-            <div className="hidden sm:flex items-center gap-1.5 bg-[#34d399]/10 border border-[#34d399]/30 px-3 py-1.5 rounded-full">
-              <div className="w-2 h-2 rounded-full bg-[#34d399] animate-pulse" />
-              <span className="text-[#34d399] text-xs">Oferta limitada</span>
-            </div>
+            {loadingPackages ? (
+              <SkeletonCard className="h-64" />
+            ) : packages[0] ? (
+              <PackageCard pkg={packages[0]} featured={true} />
+            ) : null}
           </div>
-          <PackageCard pkg={PACKAGES[0]} featured={true} />
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── POPULAR HOTELS ───────────────────────────────────── */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -252,7 +300,7 @@ export function HomePage() {
               <span className="text-[#8b5cf6] text-xs uppercase tracking-widest">Escolhas Premiadas</span>
             </div>
             <h2 className="text-white">Hotéis mais amados</h2>
-            <p className="text-[#71717a] text-sm mt-1">Avaliados com 9+ pelos nossos viajantes</p>
+            <p className="text-[#71717a] text-sm mt-1">Selecionados pelos nossos viajantes</p>
           </div>
           <Link
             href="/search"
@@ -263,38 +311,58 @@ export function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {HOTELS.slice(0, 6).map((hotel, i) => (
-            <HotelCard key={hotel.id} hotel={hotel} index={i} />
-          ))}
-        </div>
+        {loadingHotels ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} className="h-72" />
+            ))}
+          </div>
+        ) : hotels.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {hotels.slice(0, 6).map((hotel, i) => (
+              <HotelCard key={hotel.id} hotel={hotel} index={i} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-[#555] text-sm text-center py-10">Nenhum hotel encontrado.</p>
+        )}
       </section>
 
       {/* ── ALL PACKAGES ─────────────────────────────────────── */}
-      <section className="py-16 bg-[#050505] border-y border-[#1a1a1a]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-6 h-px bg-gradient-to-r from-[#34d399] to-transparent" />
-                <span className="text-[#34d399] text-xs uppercase tracking-widest">Pacotes</span>
+      {(loadingPackages || packages.length > 1) && (
+        <section className="py-16 bg-[#050505] border-y border-[#1a1a1a]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-px bg-gradient-to-r from-[#34d399] to-transparent" />
+                  <span className="text-[#34d399] text-xs uppercase tracking-widest">Pacotes</span>
+                </div>
+                <h2 className="text-white">Viagens completas</h2>
+                <p className="text-[#71717a] text-sm mt-1">Serviços e benefícios exclusivos em um só pacote</p>
               </div>
-              <h2 className="text-white">Viagens completas</h2>
-              <p className="text-[#71717a] text-sm mt-1">Voo + Hotel + Experiências em um só lugar</p>
+              <Link href="/packages" className="hidden sm:flex items-center gap-2 text-[#34d399] hover:text-[#6ee7b7] text-sm transition-colors group">
+                Ver todos
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
-            <Link href="/packages" className="hidden sm:flex items-center gap-2 text-[#34d399] hover:text-[#6ee7b7] text-sm transition-colors group">
-              Ver todos
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {PACKAGES.slice(1).map((pkg, i) => (
-              <PackageCard key={pkg.id} pkg={pkg} index={i} />
-            ))}
+            {loadingPackages ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <SkeletonCard key={i} className="h-64" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {packages.slice(1).map((pkg, i) => (
+                  <PackageCard key={pkg.id} pkg={pkg} index={i} />
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── WHY HOTELHUB ─────────────────────────────────────── */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -496,7 +564,7 @@ export function HomePage() {
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <p className="text-[#71717a] text-xs">Bem-vindo de volta</p>
-                        <p className="text-white text-sm" style={{ fontWeight: 700 }}>Ângelo 👋</p>
+                        <p className="text-white text-sm" style={{ fontWeight: 700 }}>Viajante 👋</p>
                       </div>
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#7c3aed] to-[#34d399]" />
                     </div>
@@ -522,16 +590,20 @@ export function HomePage() {
                       </div>
                     </div>
 
-                    {/* Destinations row */}
+                    {/* Destinations row — dados reais se disponíveis */}
                     <p className="text-white text-xs mb-2" style={{ fontWeight: 600 }}>Em alta</p>
                     <div className="flex gap-2 overflow-hidden">
-                      {DESTINATIONS.slice(0, 3).map(dest => (
+                      {destinations.slice(0, 3).map(dest => (
                         <div key={dest.id} className="shrink-0 w-20">
                           <div className="h-16 rounded-xl overflow-hidden mb-1">
-                            <img src={dest.image} alt={dest.name} className="w-full h-full object-cover" />
+                            <img
+                              src={dest.featuredImageUrl}
+                              alt={dest.name}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
                           <p className="text-white text-xs truncate" style={{ fontWeight: 500 }}>{dest.name}</p>
-                          <p className="text-[#34d399] text-xs">R${dest.priceFrom}</p>
+                          <p className="text-[#34d399] text-xs">{dest.city}</p>
                         </div>
                       ))}
                     </div>

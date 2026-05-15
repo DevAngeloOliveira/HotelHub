@@ -1,8 +1,17 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import { RESERVATIONS } from "../data/mock";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  type ReactNode,
+} from "react";
+import { authModule, authInterceptor, initializeHotelHubSDK } from "@hotelhub/sdk";
+import type { User } from "@hotelhub/sdk";
 
+// TravelProfile é armazenado apenas localmente (UI-only, sem endpoint no backend ainda)
 export interface TravelProfile {
   styles: string[];
   regions: string[];
@@ -12,119 +21,108 @@ export interface TravelProfile {
   interests: string[];
 }
 
-export interface AuthUser {
-  id: string;
-  name: string;
-  email: string;
+export interface AuthUser extends User {
   initials: string;
-  memberSince: string;
-  totalTrips: number;
-  points: number;
-  travelProfile?: TravelProfile;
 }
 
 interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string, name?: string) => Promise<void>;
-  register: (email: string, password: string, name: string, profile: TravelProfile) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    name: string,
+    phone: string,
+    profile?: TravelProfile,
+  ) => Promise<void>;
   logout: () => void;
-  userReservations: typeof RESERVATIONS;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const DEMO_USER: AuthUser = {
-  id: "u1",
-  name: "Ângelo Oliveira",
-  email: "angelo@hotelhub.com",
-  initials: "AO",
-  memberSince: "Jan 2024",
-  totalTrips: 4,
-  points: 12_400,
-  travelProfile: {
-    styles: ["luxury", "cultural"],
-    regions: ["europe", "asia"],
-    budget: "premium",
-    frequency: "often",
-    companions: ["couple"],
-    interests: ["gastronomy", "photography"],
-  },
-};
+function computeInitials(name: string): string {
+  return name
+    .split(" ")
+    .slice(0, 2)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
+}
+
+function toAuthUser(user: User): AuthUser {
+  return { ...user, initials: computeInitials(user.name) };
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // initializeHotelHubSDK() é chamado de forma síncrona na primeira renderização
+  // para garantir que authInterceptor leia o localStorage antes de qualquer efeito
   const [user, setUser] = useState<AuthUser | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const stored = sessionStorage.getItem("hh_user");
-      return stored ? (JSON.parse(stored) as AuthUser) : null;
-    } catch {
-      return null;
-    }
-  });
-  const [isLoading, setIsLoading] = useState(false);
-
-  const persist = (u: AuthUser) => {
-    setUser(u);
     if (typeof window !== "undefined") {
-      sessionStorage.setItem("hh_user", JSON.stringify(u));
+      initializeHotelHubSDK();
     }
-  };
+    return null;
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
-  const login = useCallback(async (email: string, _password: string, name?: string) => {
+  useEffect(() => {
+    if (!authInterceptor.getAccessToken()) {
+      setIsLoading(false);
+      return;
+    }
+    authModule
+      .getMe()
+      .then((u) => setUser(toAuthUser(u)))
+      .catch(() => authInterceptor.clearTokens())
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    const loggedUser: AuthUser = name
-      ? {
-          ...DEMO_USER,
-          name,
-          email,
-          initials: name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase(),
-        }
-      : { ...DEMO_USER, email };
-    persist(loggedUser);
-    setIsLoading(false);
+    try {
+      const res = await authModule.login({ email, password });
+      authInterceptor.setTokens({
+        accessToken: res.accessToken,
+        refreshToken: res.refreshToken,
+      });
+      setUser(toAuthUser(res.user));
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const register = useCallback(
-    async (email: string, _password: string, name: string, profile: TravelProfile) => {
+    async (
+      email: string,
+      password: string,
+      name: string,
+      phone: string,
+      _profile?: TravelProfile,
+    ) => {
       setIsLoading(true);
-      await new Promise((r) => setTimeout(r, 1400));
-      const newUser: AuthUser = {
-        id: `u_${Date.now()}`,
-        name,
-        email,
-        initials: name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase(),
-        memberSince: new Date().toLocaleDateString("pt-BR", { month: "short", year: "numeric" }),
-        totalTrips: 0,
-        points: 500,
-        travelProfile: profile,
-      };
-      persist(newUser);
-      setIsLoading(false);
+      try {
+        const res = await authModule.register({ name, email, password, phone });
+        authInterceptor.setTokens({
+          accessToken: res.accessToken,
+          refreshToken: res.refreshToken,
+        });
+        setUser(toAuthUser(res.user));
+      } finally {
+        setIsLoading(false);
+      }
     },
     [],
   );
 
   const logout = useCallback(() => {
+    authInterceptor.clearTokens();
     setUser(null);
-    if (typeof window !== "undefined") {
-      sessionStorage.removeItem("hh_user");
-    }
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        register,
-        logout,
-        userReservations: user ? RESERVATIONS : [],
-      }}
+      value={{ user, isAuthenticated: !!user, isLoading, login, register, logout }}
     >
       {children}
     </AuthContext.Provider>

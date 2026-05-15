@@ -3,30 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import {
-  MapPin,
-  Star,
-  Heart,
-  Coffee,
-  ArrowRight,
-  ShieldCheck,
-} from "lucide-react";
+import { MapPin, Heart, ArrowRight, Tag } from "lucide-react";
+import type { Hotel } from "@hotelhub/sdk";
 
-interface Hotel {
-  id: string;
-  name: string;
-  destination: string;
-  image: string;
-  stars: number;
-  rating: number;
-  reviews: number;
-  pricePerNight: number;
-  originalPrice?: number;
-  amenities: string[];
-  freeCancel: boolean;
-  breakfast: boolean;
-  badge?: string;
-}
+const PLACEHOLDER_IMG =
+  "https://images.unsplash.com/photo-1635752807994-212f7d1e678b?w=800&q=80";
 
 interface HotelCardProps {
   hotel: Hotel;
@@ -36,9 +17,7 @@ interface HotelCardProps {
 
 export function HotelCard({ hotel, variant = "grid", index = 0 }: HotelCardProps) {
   const [saved, setSaved] = useState(false);
-  const discount = hotel.originalPrice
-    ? Math.round((1 - hotel.pricePerNight / hotel.originalPrice) * 100)
-    : 0;
+  const coverImage = hotel.imageUrls?.[0] ?? PLACEHOLDER_IMG;
 
   if (variant === "list") {
     return (
@@ -51,22 +30,14 @@ export function HotelCard({ hotel, variant = "grid", index = 0 }: HotelCardProps
         <div className="relative w-64 shrink-0 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={hotel.image}
+            src={coverImage}
             alt={hotel.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0f0f0f]/30" />
-          {hotel.badge && (
+          {hotel.category && (
             <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-[#8b5cf6] text-white text-xs">
-              {hotel.badge}
-            </div>
-          )}
-          {discount > 0 && (
-            <div
-              className="absolute bottom-3 left-3 px-2.5 py-1 rounded-lg bg-[#34d399] text-black text-xs"
-              style={{ fontWeight: 700 }}
-            >
-              -{discount}%
+              {hotel.category}
             </div>
           )}
         </div>
@@ -75,59 +46,34 @@ export function HotelCard({ hotel, variant = "grid", index = 0 }: HotelCardProps
           <div>
             <div className="flex items-start justify-between gap-4 mb-2">
               <div>
-                <div className="flex items-center gap-1 mb-1">
-                  {Array.from({ length: hotel.stars }).map((_, i) => (
-                    <Star key={i} className="w-3 h-3 fill-[#f59e0b] text-[#f59e0b]" />
-                  ))}
-                </div>
                 <h3 className="text-white" style={{ fontSize: "1rem", fontWeight: 600 }}>
                   {hotel.name}
                 </h3>
-                <div className="flex items-center gap-1 mt-1">
-                  <MapPin className="w-3 h-3 text-[#8b5cf6]" />
-                  <span className="text-[#71717a] text-xs">{hotel.destination}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 bg-[#8b5cf6]/10 px-3 py-1.5 rounded-xl shrink-0">
-                <span className="text-[#a78bfa]" style={{ fontSize: "1.1rem", fontWeight: 700 }}>
-                  {hotel.rating}
-                </span>
-                <div className="text-right">
-                  <p className="text-[#a1a1aa] text-xs leading-none">Excelente</p>
-                  <p className="text-[#555] text-xs">{hotel.reviews.toLocaleString()} avaliações</p>
-                </div>
+                {hotel.address && (
+                  <div className="flex items-center gap-1 mt-1">
+                    <MapPin className="w-3 h-3 text-[#8b5cf6]" />
+                    <span className="text-[#71717a] text-xs">{hotel.address}</span>
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="flex items-center gap-2 flex-wrap mt-3">
-              {hotel.freeCancel && (
-                <span className="flex items-center gap-1 text-xs text-[#34d399] bg-[#34d399]/10 px-2 py-1 rounded-lg">
-                  <ShieldCheck className="w-3 h-3" />
-                  Cancelamento grátis
-                </span>
-              )}
-              {hotel.breakfast && (
-                <span className="flex items-center gap-1 text-xs text-[#a78bfa] bg-[#8b5cf6]/10 px-2 py-1 rounded-lg">
-                  <Coffee className="w-3 h-3" />
-                  Café da manhã
-                </span>
-              )}
-            </div>
+            {hotel.amenities && hotel.amenities.length > 0 && (
+              <div className="flex items-center gap-2 flex-wrap mt-3">
+                {hotel.amenities.slice(0, 4).map((amenity) => (
+                  <span
+                    key={amenity}
+                    className="text-xs text-[#a1a1aa] bg-[#1a1a1a] border border-[#2a2a2a] px-2 py-1 rounded-lg"
+                  >
+                    {amenity}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex items-end justify-between mt-4">
-            <div>
-              {hotel.originalPrice && (
-                <p className="text-[#555] text-xs line-through">R$ {hotel.originalPrice}/noite</p>
-              )}
-              <div className="flex items-baseline gap-1">
-                <span className="text-[#34d399]" style={{ fontSize: "1.5rem", fontWeight: 700 }}>
-                  R$ {hotel.pricePerNight}
-                </span>
-                <span className="text-[#555] text-xs">/noite</span>
-              </div>
-              <p className="text-[#555] text-xs mt-0.5">Impostos incluídos</p>
-            </div>
+            <div />
             <Link
               href={`/hotels/${hotel.id}`}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#8b5cf6] text-white text-sm hover:opacity-90 transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)]"
@@ -151,7 +97,7 @@ export function HotelCard({ hotel, variant = "grid", index = 0 }: HotelCardProps
       <div className="relative h-52 overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={hotel.image}
+          src={coverImage}
           alt={hotel.name}
           className="w-full h-full object-cover transition-transform duration-700"
           style={{ transform: "scale(1)" }}
@@ -160,21 +106,13 @@ export function HotelCard({ hotel, variant = "grid", index = 0 }: HotelCardProps
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-transparent to-transparent" />
 
-        <div className="absolute top-3 left-3 right-3 flex items-start justify-between">
-          {hotel.badge && (
+        {hotel.category && (
+          <div className="absolute top-3 left-3">
             <span className="px-2.5 py-1 rounded-lg bg-[#8b5cf6]/90 backdrop-blur-sm text-white text-xs">
-              {hotel.badge}
+              {hotel.category}
             </span>
-          )}
-          {discount > 0 && (
-            <span
-              className="px-2.5 py-1 rounded-lg bg-[#34d399]/90 backdrop-blur-sm text-black text-xs ml-auto"
-              style={{ fontWeight: 700 }}
-            >
-              -{discount}%
-            </span>
-          )}
-        </div>
+          </div>
+        )}
 
         <button
           onClick={() => setSaved(!saved)}
@@ -186,64 +124,41 @@ export function HotelCard({ hotel, variant = "grid", index = 0 }: HotelCardProps
             }`}
           />
         </button>
-
-        <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-[#000]/50 backdrop-blur-sm px-2.5 py-1.5 rounded-xl">
-          <Star className="w-3 h-3 fill-[#f59e0b] text-[#f59e0b]" />
-          <span className="text-white text-xs" style={{ fontWeight: 600 }}>
-            {hotel.rating}
-          </span>
-          <span className="text-[#a1a1aa] text-xs">({hotel.reviews.toLocaleString()})</span>
-        </div>
       </div>
 
       <div className="p-4">
-        <div className="flex items-center gap-0.5 mb-1.5">
-          {Array.from({ length: hotel.stars }).map((_, i) => (
-            <Star key={i} className="w-3 h-3 fill-[#f59e0b] text-[#f59e0b]" />
-          ))}
-        </div>
-
         <h3 className="text-white mb-1" style={{ fontSize: "0.95rem", fontWeight: 600 }}>
           {hotel.name}
         </h3>
 
-        <div className="flex items-center gap-1 mb-3">
-          <MapPin className="w-3 h-3 text-[#8b5cf6]" />
-          <span className="text-[#71717a] text-xs">{hotel.destination}</span>
-        </div>
+        {hotel.address && (
+          <div className="flex items-center gap-1 mb-3">
+            <MapPin className="w-3 h-3 text-[#8b5cf6]" />
+            <span className="text-[#71717a] text-xs">{hotel.address}</span>
+          </div>
+        )}
 
-        <div className="flex items-center gap-2 mb-4 flex-wrap">
-          {hotel.freeCancel && (
-            <span className="text-xs text-[#34d399] bg-[#34d399]/10 px-2 py-0.5 rounded-md flex items-center gap-1">
-              <ShieldCheck className="w-2.5 h-2.5" />
-              Cancelamento grátis
-            </span>
-          )}
-          {hotel.breakfast && (
-            <span className="text-xs text-[#a78bfa] bg-[#8b5cf6]/10 px-2 py-0.5 rounded-md flex items-center gap-1">
-              <Coffee className="w-2.5 h-2.5" />
-              Café incluído
-            </span>
-          )}
-        </div>
+        {hotel.amenities && hotel.amenities.length > 0 && (
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            {hotel.amenities.slice(0, 3).map((amenity) => (
+              <span
+                key={amenity}
+                className="text-xs text-[#a1a1aa] bg-[#1a1a1a] border border-[#222] px-2 py-0.5 rounded-md flex items-center gap-1"
+              >
+                <Tag className="w-2.5 h-2.5 text-[#8b5cf6]" />
+                {amenity}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className="flex items-end justify-between">
-          <div>
-            {hotel.originalPrice && (
-              <p className="text-[#555] text-xs line-through">R$ {hotel.originalPrice}</p>
-            )}
-            <div className="flex items-baseline gap-0.5">
-              <span className="text-[#34d399]" style={{ fontSize: "1.3rem", fontWeight: 700 }}>
-                R$ {hotel.pricePerNight}
-              </span>
-              <span className="text-[#555] text-xs">/noite</span>
-            </div>
-          </div>
+          <div />
           <Link
             href={`/hotels/${hotel.id}`}
             className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#8b5cf6] text-white text-xs hover:opacity-90 transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(139,92,246,0.3)]"
           >
-            Reservar
+            Ver hotel
             <ArrowRight className="w-3 h-3" />
           </Link>
         </div>

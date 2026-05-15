@@ -5,10 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Eye, EyeOff, ArrowRight, ArrowLeft, Check, Sparkles,
-  User, Mail, Lock, MapPin, Wallet, Plane, Users,
+  User, Mail, Lock, Phone, Plane,
   Star, Camera, UtensilsCrossed, Music, Dumbbell,
   ShoppingBag, Leaf, Building2, Waves, Mountain,
-  Globe, Heart, Zap, Coffee
+  Heart, Zap, Coffee
 } from "lucide-react";
 import { useAuth, type TravelProfile } from "../context/AuthContext";
 import { Input } from "./ui/input";
@@ -189,6 +189,7 @@ export function RegisterWizard() {
   // Step 0 – credentials
   const [name, setName]       = useState("");
   const [email, setEmail]     = useState("");
+  const [phone, setPhone]     = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const strength = getStrength(password);
@@ -212,7 +213,7 @@ export function RegisterWizard() {
   const [done, setDone] = useState(false);
 
   const canNext = () => {
-    if (step === 0) return name.trim().length >= 2 && email.includes("@") && strength >= 50;
+    if (step === 0) return name.trim().length >= 2 && email.includes("@") && phone.trim().length >= 8 && strength >= 50;
     if (step === 1) return styles.length >= 1;
     if (step === 2) return regions.length >= 1;
     if (step === 3) return budget && frequency && companions.length >= 1;
@@ -222,7 +223,7 @@ export function RegisterWizard() {
 
   const handleFinish = async () => {
     const profile: TravelProfile = { styles, regions, budget, frequency, companions, interests };
-    await register(email, password, name, profile);
+    await register(email, password, name, phone, profile);
     setDone(true);
     setTimeout(() => router.push(redirect), 2200);
   };
@@ -350,6 +351,11 @@ export function RegisterWizard() {
                   <Label htmlFor="reg-email">E-mail</Label>
                   <Input id="reg-email" type="email" placeholder="seu@email.com" value={email}
                     onChange={e => setEmail(e.target.value)} leftIcon={<Mail className="w-4 h-4" />} />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="reg-phone">Telefone</Label>
+                  <Input id="reg-phone" type="tel" placeholder="+55 11 91234-5678" value={phone}
+                    onChange={e => setPhone(e.target.value)} leftIcon={<Phone className="w-4 h-4" />} />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <Label htmlFor="reg-pass">Senha</Label>

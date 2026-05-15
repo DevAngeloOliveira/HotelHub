@@ -17,12 +17,10 @@ import {
   LogIn,
   Sparkles,
   LogOut,
-  Star,
   Settings,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 
 const NAV_LINKS = [
@@ -168,27 +166,10 @@ export function Navbar() {
                               </div>
                             </div>
                             <div className="flex items-center gap-1.5 bg-[#8b5cf6]/10 border border-[#8b5cf6]/20 rounded-lg px-2.5 py-1.5">
-                              <Star className="w-3 h-3 text-[#a78bfa] fill-[#a78bfa]" />
-                              <span className="text-[#a78bfa] text-xs font-semibold">
-                                {user.points.toLocaleString()} pontos
+                              <span className="text-[#a78bfa] text-xs font-semibold capitalize">
+                                {user.role === "ADMIN" ? "Admin" : "Membro"}
                               </span>
-                              <Badge variant="default" className="ml-auto text-[10px] px-1.5 py-0">
-                                Gold
-                              </Badge>
                             </div>
-
-                            {user.travelProfile && user.travelProfile.styles.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mt-2">
-                                {user.travelProfile.styles.slice(0, 3).map((s) => (
-                                  <span
-                                    key={s}
-                                    className="text-[10px] text-[#555] bg-[#111] border border-[#1a1a1a] px-1.5 py-0.5 rounded-full capitalize"
-                                  >
-                                    {s}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
                           </div>
 
                           <Separator />
@@ -201,9 +182,6 @@ export function Navbar() {
                             >
                               <Calendar className="w-4 h-4" />
                               Minhas Reservas
-                              <span className="ml-auto text-xs text-[#34d399] bg-[#34d399]/10 px-1.5 py-0.5 rounded-md">
-                                {user.totalTrips}
-                              </span>
                             </Link>
                             <button className="w-full flex items-center gap-3 px-4 py-2.5 text-[#a1a1aa] hover:text-white hover:bg-white/5 transition-all text-sm text-left">
                               <Settings className="w-4 h-4" />
